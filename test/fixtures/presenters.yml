@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  gesparticipant_id: 1
+  identification: MyString
+  username: MyString
+  password: MyString
+  password_salt: MyString
+  email: MyString
+  dob: MyString
+  details: MyString
+
+two:
+  gesparticipant_id: 1
+  identification: MyString
+  username: MyString
+  password: MyString
+  password_salt: MyString
+  email: MyString
+  dob: MyString
+  details: MyString

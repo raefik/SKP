@@ -1,0 +1,33 @@
+/** BEGIN CSS FRAMEWORK **/
+	@import url("plugins/bootstrap-select2/select2.css");
+	@import url("plugins/bootstrap-datepicker/css/datepicker.css");
+	@import url("plugins/bootstrap-timepicker/css/bootstrap-timepicker.css");
+	@import url("bootstrap-datetimepicker.min.css");
+	@import url("plugins/jquery-slider/css/jquery.sidr.light.css");
+	@import url("plugins/jquery-datatable/css/jquery.dataTables.css");
+	@import url("plugins/boostrap-checkbox/css/bootstrap-checkbox.css");
+	@import url("plugins/datatables-responsive/css/datatables.responsive.css");
+
+	@import url("plugins/pace/pace-theme-flash.css");
+	@import url("plugins/fullcalendar/fullcalendar.css");
+	@import url("plugins/boostrap-checkbox/css/bootstrap-checkbox.css");
+	@import url("plugins/jquery-notifications/css/messenger.css");
+	@import url("plugins/jquery-notifications/css/messenger-theme-flat.css");
+	@import url("plugins/jquery-slider/css/jquery.sidr.light.css");
+	@import url("plugins/boostrapv3/css/bootstrap.min.css");
+	@import url("plugins/boostrapv3/css/bootstrap-theme.min.css");
+	@import url("plugins/font-awesome/css/font-awesome.css");
+	@import url("animate.min.css");
+	@import url("styles.css");
+	@import url("responsive.css");
+	@import url("custom-icon-set.css");
+
+	@import url("footable/footable.core.css");
+	@import url("plugins/dataTableTools/media/css/TableTools.css");
+	@import url("imagecrop/imgareaselect-default.css");
+
+/** END CSS FRAMEWORK **/
+
+
+
+

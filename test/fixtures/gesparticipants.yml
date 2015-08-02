@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  participanttype_code: MyString
+  reg_id: 1
+  rfid: MyString
+  hotelstatus_code: MyString
+  transportstatus_code: MyString
+  committeestatus_code: MyString
+
+two:
+  participanttype_code: MyString
+  reg_id: 1
+  rfid: MyString
+  hotelstatus_code: MyString
+  transportstatus_code: MyString
+  committeestatus_code: MyString

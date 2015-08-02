@@ -1,0 +1,27 @@
+#######localhost anass
+#development:
+#  adapter:  sqlserver
+#  host:     192.168.0.115
+#  database: ges2014
+#  port:		2301
+#  username: admin
+#  password: admin
+
+
+#######live server seleratradisi
+#development:
+#  adapter:  sqlserver
+#  host:     mssql2008r2.ukdns.biz
+#  database: seleratr_ges2014
+#  username: seleratr_admin
+#  password: Ges2014
+
+
+########demo server uitm
+development:
+  adapter:  sqlserver
+  host:     192.168.2.2
+  port:		1433
+  database: ges2014
+  username: adminGES
+  password: ges2014

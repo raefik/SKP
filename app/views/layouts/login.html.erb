@@ -1,0 +1,97 @@
+<% login? %>
+
+<!DOCTYPE html>
+<html>
+<head>
+  	<title>Attendance System</title>
+  	<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+
+  	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	<link href="assets/login-css.css" rel="stylesheet" type="text/css"/>
+	
+	<script src="<%= nodeserver %>/socket.io/socket.io.js" type="text/javascript"></script> 
+
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="error-body no-top lazy" style="background-color: rgba(0, 204, 255, 0.49) !important;">
+	
+	<!-- BEGIN FLASH MESSAGE -->
+	<% flash.each do |name, msg| %>
+     	<%= content_tag :div, msg, :id => "flash_#{name}",:style => "display:none" %>
+    <% end %>
+    <!-- END FLASH MESSAGE -->
+
+    <!-- BEGIN CONTAINER -->
+	<div class="container">
+	  <div class="row login-container animated fadeInUp m-l-10 m-r-10 xs-m-l-5 xs-m-r-5" style="margin-top:8%;">  
+	 		
+	       <div class="col-md-6 col-md-offset-3 tiles white no-padding shadow" style="margin-bottom:50px;">
+	       		<%= yield %>  
+	      </div>  
+	  </div>
+	</div>
+	<!-- END CONTAINER -->
+
+	<!-- BEGIN CORE TEMPLATE JS -->
+	<script src="assets/login-js.js" type="text/javascript"></script>
+	<!-- END CORE TEMPLATE JS -->    
+	
+
+</body>
+<!-- Modal -->
+<div class="modal fade" data-backdrop="static" id="activateRFID" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+	
+	<div class="col-md-3" id="loadAjax">
+		<h1 style="color:white!important">Please wait..</h1>
+		<div class="progress progress-striped active progress-large">
+		  	<div data-percentage="100%" style="width: 100%;" class="progress-bar progress-bar-success"></div>
+		</div>
+	</div>
+
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			    <br>
+			    <i class="fa fa-user fa-7x"></i>
+			    <h2 id="myModalLabel" class="semi-bold" >
+			    	<font id="pName"></font>
+			    </h2>
+			    <p class="no-margin"  id="pIc"></p>
+			    <p class="no-margin"  id="pEmail"></p>
+			    <br/>
+			    <p class="no-margin" style="font-size:20px;" id="pStatus" regid=""></p>
+			    <br>
+			</div>
+
+			<div class="modal-footer">
+			    <button type="button" class="btn btn-success" id="pr">Validate</button>
+			    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	  <!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- END BODY -->
+<script type="text/javascript">
+$(document).ready(function() {	
+	// flash message //
+    if($("#flash_alert").html()!="" && $("#flash_alert").html()!=null){
+        showErrorMessage($("#flash_alert").html());
+    }
+    else if($("#flash_notice").html()!="" && $("#flash_notice").html()!=null){
+        showSuccess($("#flash_notice").html());
+    }
+});
+</script>
+</html>
+
+

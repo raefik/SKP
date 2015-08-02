@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  theme: MyString
+  description: MyString
+  room_code: MyString
+  trackstatus_code: MyString
+  session_code: MyString
+
+two:
+  theme: MyString
+  description: MyString
+  room_code: MyString
+  trackstatus_code: MyString
+  session_code: MyString

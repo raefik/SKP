@@ -1,0 +1,774 @@
+
+<style type="text/css">
+    .opacity{
+	     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	      filter: alpha(opacity=0);
+	     -moz-opacity: 0;
+	     -khtml-opacity: 0;
+	     opacity: 0;
+    }
+
+    input[type="file"]{
+	    position: absolute;
+	    width: 82px;
+	    margin-left: -8px;
+		margin-top: -27px;
+    }
+</style>
+
+<div class="page-title">
+	<h3>Manage Delegates</h3>
+</div>
+<input type="hidden" id="list" value="All"/>
+
+<div class="row-fluid" id="addP" style="display:none;">
+    <div class="span12">
+      <div class="grid simple ">
+        <div class="grid-title">
+          <h4>
+          		Add <span class="semi-bold">Delegate</span> 
+          </h4>
+          <div class="tools"> <a href="javascript:;" class="reload"></a></div>
+        </div>
+        <div class="grid-body ">
+
+        	<div class="row">
+	        	<div class="form-group col-md-6">
+	                <label class="form-label">*FULLNAME</label>
+	                <span class="help"></span>
+	                <div class="controls">
+	                	<input type="text" class="form-control" id="fullname">
+	                </div>
+	            </div>
+
+				<div class="form-group col-md-6">
+	                <label class="form-label">*NO.IC/PASSPORT</label>
+	                <span class="help"></span>
+	                <div class="controls">
+	                	<input type="text" class="form-control" id="noic">
+	                </div>
+	            </div>
+	        </div>
+
+	        <div class="row">
+	        	<div class="form-group col-md-6">
+	                <label class="form-label">DESIGNATION</label>
+	                <span class="help"></span>
+	                <div class="controls">
+	                	<input type="text" class="form-control" id="title">
+	                </div>
+	            </div>
+
+				<div class="form-group col-md-6">
+	                <label class="form-label">ORGANIZATION</label>
+	                <span class="help"></span>
+	                <div class="controls">
+	                	<input type="text" class="form-control" id="organization">
+	                </div>
+	            </div>
+	        </div>
+
+	        <div class="row">
+	        	<div class="form-group col-md-4">
+	                <label class="form-label">*COUNTRY</label>
+	                <span class="help"></span>
+	                <div class="controls">
+	                	<select id="nationality" style="width:100% !important;">
+	                		<option selected disabled="disabled" value="empty">Select Country</option>
+	                		<% @nationality.each do|n| %>
+	                		<option value="<%= n.code %>"><%= n.name %></option>
+	                		<% end %>
+	                	</select>
+	                </div>
+	            </div>
+
+	            <div class="form-group col-md-4">
+	                <label class="form-label">*HOTEL</label>
+	                <span class="help"></span>
+	                <div class="controls">
+	                	<select id="hotel" style="width:100% !important;">
+	                		<option selected disabled="disabled" value="empty">Select Hotel</option>
+	                		<% @hotel.each do|h| %>
+	                		<option value="<%= h.code %>"><%= h.name %></option>
+	                		<% end %>
+	                	</select>
+	                </div>
+	            </div>
+	            <!--
+				<div class="form-group col-md-4">
+	                <label class="form-label">PHONE </label>
+	                <span class="help"></span>
+	                <div class="controls">
+	                	<input type="text" class="form-control" id="phone">
+	                </div>
+	            </div>
+				-->
+	            <div class="form-group col-md-4">
+	                <label class="form-label">*DELEGATE TYPE</label>
+	                <span class="help"></span>
+	                <div class="controls">
+	                	<select id="type" style="width:100% !important;">
+	                		<option selected disabled="disabled" value="empty">Select Delegate Type</option>
+	                		<% @type.each do|t| %>
+	                		<option value="<%= t.code %>"><%= t.name %></option>
+	                		<% end %>
+	                	</select>
+	                </div>
+	            </div>
+
+	        </div>
+
+	        <div class="row">
+	        	<div class="form-group col-md-8">
+	                <label class="form-label">EMAIL</label>
+	                <span class="help">e.g : participant@example.com</span>
+	                <div class="controls">
+	                	<input type="text" class="form-control" id="email">
+	                </div>
+	            </div>
+	        </div>
+
+	        <div class="row" id="spk" style="display:none">
+	         	<h4 style="margin-top:20px;"><span class="semi-bold">SPEAKER DETAILS</span></h4>
+		        <hr>
+	        	
+	        	<div class="row">
+		        	<div class="col-md-4 col-sm-6">
+				        <div class="form-group col-md-12">
+			                <label class="form-label">*DATE OF BIRTH</label>
+			                <span class="help"></span>
+			                <div class="controls">
+			                	<input type="text" class="form-control" id="dob">
+			                </div>
+			            </div>
+			            <div class="form-group col-md-12">
+			                <label class="form-label">PROFILE IMAGE</label>
+			                <span class="help"></span>
+			                <div class="controls">
+			               	<form id="file-upload" method="post" class="dropzone no-margin">
+		                     	<div class="fallback">
+			                        <input type="text" class="form-control" disabled="disabled" id="uploadname" placeholder="No selected file.." style="display:inline-block;" >
+			                        <div style="text-align:right;margin-top:-37px;">
+				                        <button type="button" class="btn-small btn-default" id="upload" style="padding:6px;" >
+				                        Choose File<input name="file" class="opacity" type="file" id="profilepic">
+				                        </button>
+			                        </div>
+		                      	</div>
+		                    </form>
+			                </div>
+			            </div>
+
+			        </div>
+			        
+		            <div class="form-group col-md-6 col-vlg-4 col-sm-12">
+		                <label class="form-label">BACKGROUND DETAILS</label>
+		                <span class="help"></span>
+		                <div class="controls">
+		                	<textarea id="details" style="width:100%;resize:none;height:129px;"></textarea>
+		                </div>
+		            </div>
+    
+		        </div>
+		        <div class="row">
+		        	<div class="col-md-12">
+		        		<div class="form-group col-md-12" id="gamba">
+			        	</div>
+		        	</div>
+		        </div>
+		    </div>
+
+	        <div class="row">
+	        	<hr>
+	        	<div class="form-group col-md-12" style="text-align:right;">
+		        	<button type="button" class="btn btn-success" id="addPSubmit">Submit</button>&nbsp;&nbsp;
+					<button type="button" class="btn btn-danger" id="addPCancel">Cancel</button>
+				</div>
+	        </div>
+
+
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+      <div class="grid simple ">
+        <div class="grid-title">
+          <h4>
+          		All <span class="semi-bold">Delegate</span> 
+          </h4>
+          <div class="tools"> <a href="javascript:;" class="reload"></a></div>
+        </div>
+        <div class="grid-body ">
+          <table class="table table-hover table-condensed footable toggle-arrow-tiny" id="table1">
+            <thead>
+              <tr>
+                <th style="width:10%" data-hide="phone">Tag Code</th>
+                <th style="width:20%">Fullname</th>
+                <th style="width:15%">Designation</th>
+                <th style="width:17%">Organization</th>
+                <th style="width:13%" data-hide="phone,tablet">Country</th> 
+                <!--<th style="width:10%" data-hide="phone,tablet">Email</th>-->
+                <th style="width:10%" data-hide="phone">Type</th>
+                <th style="width:15%">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+<script type="text/javascript">
+window.onload = function(){
+
+	$("#menu-nav > li:nth(3), #menu-nav > li:nth(3) > ul > li:nth(0)").addClass("active");
+	$("#arrow1").addClass("open");
+
+   	//init footable for responsive
+  	$('#table1').footable({
+		breakpoints: {
+			phone : 480,
+		    tablet: 840,
+		    desktop: 1200
+		  }
+	});
+
+	/** start datatable init **/
+	var tableElement = $('#table1');
+
+    tableElement.dataTable( {
+		"sDom": "<'row'<'col-md-4 toolbar'l T ><'col-md-8' f <'filter dataTables_filter'>>r >t<'row'<'col-md-12'p i>>",
+		"oTableTools": {
+			"sSwfPath": "/assets/plugins/dataTableTools/media/swf/copy_csv_xls_pdf.swf",
+			"aButtons": [
+				{
+					"sExtends":    "collection",
+					"sButtonText": "<i class='fa fa-download'></i>",
+					"aButtons": [ 
+						{
+							"sExtends" : "xls",
+							"sTitle"   : "List of Delegate ("+$("#list").val()+")",
+							"mColumns" : [ 0, 1, 2, 5 ],
+							"sFileName": "*.xls",
+							"fnClick": function( nButton, oConfig, flash ){
+	                            flash.setFileName("List_of_Delegate_("+$("#list").val()+").xls" )
+	                            this.fnSetText( flash,
+							        "List of Participant ("+$("#list").val()+")\n\n"+
+							        "Showing "+tableElement.fnSettings().aoData.length+" of "+tableElement.fnSettings().fnRecordsTotal()+" participant(s)\n\n"+
+							        this.fnGetTableData(oConfig)
+							    );     
+	                        }
+						},
+						{
+							"sExtends" : "pdf",
+							//"sTitle"   : "List of Participant ("+$("#list").val()+")",
+							"mColumns" : [ 0, 1, 2, 5 ],
+							"fnClick":  function( nButton, oConfig, flash ) {
+							    flash.setFileName("List_of_Delegate_("+$("#list").val()+").pdf" );
+							    console.log(this)
+							    this.fnSetText( flash,
+							        "title:"+ "List of Participant ("+$("#list").val()+")" +"\n\n"+
+							        "message:"+ "Showing "+tableElement.fnSettings().aoData.length+" of "+tableElement.fnSettings().fnRecordsTotal()+" participant(s)\n\n"+ 
+							        "colWidth:"+ this.fnCalcColRatios(oConfig) +"\n"+
+							        "orientation:"+ oConfig.sPdfOrientation +"\n"+
+							        "size:"+ oConfig.sPdfSize +"\n"+
+							        "--/TableToolsOpts--\n" +
+							        this.fnGetTableData(oConfig)
+							    );
+							}
+						}, 
+						"copy"
+					]
+				}
+			],
+		},
+		//"aoColumnDefs": [{ 
+		//	"bSortable": false, "aTargets": [ 4,5 ] 
+		//}],
+		"bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "/get-list-participant.html",
+        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
+	      oSettings.jqXHR = $.ajax( {
+	        "dataType" : 'json',
+	        "url" : sSource,
+	        "data" : aoData,
+	        "success" : fnCallback,
+	        "type": "POST",
+	        "headers": {
+		            	'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+		        	},
+	        //"beforeSend" :  function(xhr){
+	        					//if(xhr && xhr.readystate != 4){
+						        //    xhr.abort();
+						        //}
+	        //				},
+	      } );
+	    },
+		"aLengthMenu": [[10, 20, 30, 40, -1], [10, 20, 30, 40,"All"]],
+        "iDisplayLength": 10,
+		"sPaginationType": "bootstrap",
+		"aoColumnDefs": [
+          { 'bSortable': false, 'aTargets': [ 6 ] },
+		],
+		"aaSorting": [[ 0, "asc" ]],
+		"bFilter": true,
+		"oLanguage": {
+			"sLengthMenu": "_MENU_ ",
+			"sInfo": "Showing <b>_START_ to _END_</b> of _TOTAL_ participants"
+		},
+		"oLanguage": {
+			"sSearch": "SEARCH: "
+		},
+		"deferRender": true,
+		"deferLoading": 57,
+		bAutoWidth     : false,
+        fnPreDrawCallback: function () {
+        	$('.dataTables_filter input').attr("placeholder", "TAG CODE / NAME");
+        	$('.dataTables_filter input').attr("style", "text-align:center;color:#777;margin-right:10px;");
+        	$('.dataTables_filter').attr("style", "text-align:right;");
+        },
+        fnRowCallback  : function (nRow) {
+
+        },
+        fnDrawCallback : function (oSettings) {
+        	$(".act").parent().parent().attr("style","background-color:rgba(175, 255, 168, 0.23) !important;")
+        }
+	});
+
+	var btn = '<div class="bt table-tools-actions" ><button class="btn btn-primary" style="margin-left:12px;margin-right:10px;" id="addNP">Add Delegate</button></div>'
+	$("div.toolbar > .DTTT").after(btn);
+	$("div.bt").attr("style","margin-top: -37px;text-align: right;")
+
+
+	option  = '<label class="opt">FILTER:<select style="margin-left:12px;margin-right:10px;width:173px;" id="typeFilter" s="All" >'
+	option += '<option value="all">All</option>'
+	option += '<option value="DLG">Participant</option>'
+	option += '<option value="SPK">Speaker</option>'
+	option += '<option value="MDA">Staff</option>'
+
+	option += '</select></label>'
+	$("div.filter").html(option)
+	$("div.filter, .opt").css("text-align","right")
+
+	$("#typeFilter").live('change',function(){
+        var s = "All"
+        if($(this).val() == "DLG" ){ s = "Delegate"}
+        else if($(this).val() == "SPK" ){ s = "Speaker"}
+        else if($(this).val() == "MDA" ){ s = "Staff"}
+
+        $("#list").val(s)
+    	
+        tableElement.fnFilter($(this).val(), 3)
+
+    });
+
+	//$("#typeFilter").css("width", $(".input-medium").css("width"))
+
+	tableElement.fnSetFilteringDelay();
+	
+	$('#table1_wrapper .dataTables_filter input').addClass("input-medium "); // modify table search input
+    $('#table1_wrapper .dataTables_length select').addClass("select2-wrapper span12"); // modify table per page dropdown
+	
+	$('#table1 input').click( function() {
+        $(this).parent().parent().parent().toggleClass('row_selected');
+    });
+	
+	
+	$('#quick-access .btn-cancel').click( function() {
+		$("#quick-access").css("bottom","-115px");
+    });
+	$('#quick-access .btn-add').click( function() {
+		fnClickAddRow();
+		$("#quick-access").css("bottom","-115px");
+    });
+    /** end datatable init**/
+
+    //############	start add participant	############
+    $("#nationality, #type, #hotel").select2()
+    $("#dob").datepicker({
+    	format: "dd MM yyyy",
+		startView: 1,
+		autoclose: true,
+		todayHighlight: true
+    })
+
+    $("#addNP").live("click",function(){
+    	$("#addP").slideDown();
+    	$("#fullname").focus()
+    	//showSuccess("Ok!!");
+    })
+
+    $("#addPCancel").live("click",function(){
+    	clearform()
+    })
+
+    $("#type").live("change",function(){
+    	if($(this).val() == "SPK"){
+    		$("#spk").slideDown();
+    	}else{
+    		$("#spk").slideUp();
+    	}
+    	clearSpeaker()
+
+    });
+
+    $("#profilepic").live("change", function(){
+
+    	var view
+    	$(".imgareaselect-selection").parent().remove()
+		$(".imgareaselect-outer").remove()
+    	
+    	if($(this).val()=="" || $(this).val() == null ){
+    		view = "No selected file.."
+    		$("#gamba").html("")
+    	}
+    	else{
+    		
+    		var ok = autoupload()
+			if(ok){
+    			view = $("#profilepic")[0].files[0].name
+
+    			img  = '<div style="text-align:center;">'
+				img += '<br/>'
+				img += '<img src="/assets/ajaxload.gif">'
+				img +='<br/>'
+				img += '<font>LOADING..</font>'
+				img += '</div>'
+
+			    $("#gamba").html(img)
+
+			    var formData = new FormData($("#file-upload")[0]);
+
+			     $.ajax({
+			        url: "/autoupload.html",
+			        type: "POST",
+			        data: formData,
+			        cache: false,
+			        contentType: false,
+			        processData: false,
+			        headers: {
+		            	'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+		        	},
+			    }).success(function(data){
+			    	picbeforecrop(data)
+	
+			    }).error(function(){ 
+			    	$("#gamba").html("")
+			    	$("#profilepic").val("")	
+			    	$("#uploadname").attr("placeholder","No selected file..")
+
+			    	showErrorMessage("Something went wrong! Please re-choose image")
+			    })
+
+    		}else{
+    			view = "No selected file.."
+    			$("#profilepic").val("")	
+    		}
+    	}
+
+    	$("#uploadname").attr("placeholder",view)
+    })
+
+
+    $("#addPSubmit").live("click",function(){
+    	var r = checkform();
+    	if(r){
+
+    		$.ajax({
+			  	url: "/new-delegate.html",
+			  	type: "post",
+		        data: {
+		            name: $("#fullname").val(),
+		            noic: $("#noic").val(),
+		            organization: $("#organization").val(),
+		            title: $("#title").val(),
+		            email: $("#email").val(),
+		            phone: $("#phone").val(),
+		            type: $("#type").val(),
+		            nationality: $('#nationality').val(),
+		            hotel: $("#hotel").val(),
+		            dob: $("#dob").val(),
+		            details: $("#details").val(),
+		            picA: $("#profilepic").val(),
+		            pic: $("#crop").val(),
+		            crop_w:$('input[name="crop_w"]').val(),
+		            crop_h:$('input[name="crop_h"]').val(),
+		            crop_x:$('input[name="crop_x"]').val(),
+		            crop_y:$('input[name="crop_y"]').val()
+		        
+		        },
+		        headers: {
+		            'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+		        },
+			}).success(function(data) {
+				if(data.status == "success"){
+					clearform()
+					$('#table1').dataTable().fnDraw();
+					showSuccess("Delegate successfully added!!");
+				}else{
+					showErrorMessage(data.msg);
+				}
+
+					
+			}).error(function(){
+				showErrorMessage("Something went wrong!\nPlease try again later");
+			});
+
+
+
+
+
+    	}
+    })
+    //############	end add participant 	############
+
+    //############	start view delegate  ############
+    $(".edit").live('click',function(){
+    	editDelegate($(this).attr("uid"));
+    })
+
+    //############	end view delegate 	############
+
+
+}
+
+function clearform(){
+    $("#fullname, #noic, #email, #phone, #organization, #title").val("")
+
+    clearSpeaker()
+	$('#nationality, #type, #hotel').val("empty")
+	$('#nationality, #type, #hotel').select2().trigger("change")
+	
+	$("#spk").slideUp();
+	$("#addP").slideUp();
+
+	$("#gamba").html("")
+}
+
+function clearSpeaker(){
+	$("#profilepic, #details, #dob").val("")
+    $("#uploadname").attr("placeholder","No selected file..")
+    $(".imgareaselect-selection").parent().remove()
+    $(".imgareaselect-outer").remove()
+}
+
+function checkform(){
+	if($("#fullname").val() == "" || $("#fullname").val() == null ){
+		showErrorMessage("Fullname cannot empty!");
+		$("#fullname").focus()
+		return false;
+	}
+	else if($("#noic").val() == "" || $("#noic").val() == null ){
+		showErrorMessage("No.IC/Passport cannot empty!");
+		$("#noic").focus()
+		return false;
+	}
+	else if($('#type').val() == "" || $('#type').val() == null){
+		showErrorMessage("Please select participant type!");
+		$("#type").focus()
+		return false;
+	}
+	else if($('#nationality').val() == "" || $('#nationality').val() == null){
+		showErrorMessage("Please select nationality!");
+		$("#nationality").focus()
+		return false;
+	}
+	else if($('#hotel').val() == "" || $('#hotel').val() == null){
+		showErrorMessage("Please select hotel!");
+		$("#hotel").focus()
+		return false;
+	}
+
+	if($('#type').val() == "SPK"){
+		if($('#dob').val() == "" || $('#dob').val() == null){
+			showErrorMessage("Date of birth cannot empty!");
+			$("#dob").focus()
+			return false;
+		}
+
+		if($('#profilepic').val() != "" && $('#profilepic').val() != null){
+			if($('input[name="crop_w"]').val() == "0"){
+				showErrorMessage("Please crop your image!");
+				return false;
+			}
+		}
+
+	}
+
+	return true;
+	
+}
+
+
+function autoupload(){
+
+	var typeP = $("#profilepic")[0].files[0].type.split("/")[1].toLowerCase()
+    if(typeP != "jpg" && typeP != "jpeg" && typeP !="png" && typeP !="gif"){
+        showErrorMessage("File type not allowed!")
+        return false
+    }
+    if($("#profilepic")[0].files[0].size > 2095000){
+        showErrorMessage("Picture Size must less than 2Mb!")
+        return false
+    }
+    if($("#profilepic")[0].files[0].name.split(".").length>2){         
+        showErrorMessage("Selected filename cannot has character dot(.)!")
+        return false 
+    }
+
+    return true
+}
+
+function picbeforecrop(data){
+	//$("#gamba").html("")
+	
+	img  = '<div style="text-align:center;">'
+	img += '<br/>'
+	img += '<img id="cropped" width="400px" src="/assets/speaker/temp/'+data+'">'
+	img += '<br/>'
+	img += '<font style="color:rgba(255, 0, 0, 0.71)">*Please crop your image</font>'
+
+    img += '<input type="hidden" id="crop" value="'+data+'" />'
+    img += '<input type="hidden" name="crop_x" value="0" />'
+    img += '<input type="hidden" name="crop_y" value="0" />'
+    img += '<input type="hidden" name="crop_x1" value="0" />'
+    img += '<input type="hidden" name="crop_y1" value="0" />'
+
+    img += '<input type="hidden" name="crop_w" value="0" />'
+    img += '<input type="hidden" name="crop_h" value="0" />'
+
+	img += '</div>'
+	//console.log(img)
+	$("#gamba").html(img)
+
+
+	$("#cropped").imgAreaSelect({     
+		aspectRatio: '2:2',
+		onSelectEnd: function (img, selection) {
+		    $('input[name="crop_x"]').val(selection.x1);
+		    $('input[name="crop_y"]').val(selection.y1);
+		    $('input[name="crop_x1"]').val(selection.x2);
+		    $('input[name="crop_y1"]').val(selection.y2);
+		    $('input[name="crop_w"]').val(selection.x2-selection.x1);
+		    $('input[name="crop_h"]').val(selection.y2-selection.y1);
+    	}
+	})
+    
+}
+
+function editDelegate(id){
+		$("#aLoading").html("Loading...")		
+		$(".nModal").hide()
+		$("#loadAjaxSession").show()
+
+		$("#newSession").modal("show");
+		
+		$.ajax({
+		  	url: "/edit-delegate.html",
+		  	type: "post",
+	        data: {
+	            id: id,
+	            todo: "view",
+	        },
+	        headers: {
+	            'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+	        },
+		}).success(function(data) {
+			$(".nModal").show()
+			$("#loadAjaxSession").hide()
+
+			if(data.status == "success"){
+		    	var body  = '<div class="row form-row">'
+		    		body += '<div class="col-md-6" style="">'
+					body += '<input type="hidden" value="" id="delegate" >'
+					body += '</div>'
+					body += '</div>'
+
+					body += '<div class="row form-row">'
+					body += '<div class="col-md-12">'
+					body += '<input type="text" class="form-control" placeholder="Fullname" id="fname" style="color:text-align:center" value="" >'
+					body += '</div>'
+					body += '</div>'
+
+					body += '<div class="row form-row" style="padding-top:10px;">'
+					body += '<div class="col-md-6" style="">'
+					body += '<input type="text" class="form-control" placeholder="Designation" id="design" style="color:text-align:center" value="" >'
+					body += '</div>'
+					body += '<div class="col-md-6" style="">'
+					body += '<input type="text" class="form-control" placeholder="Organization" id="orga" style="color:text-align:center" value="" >'
+					body += '</div>'
+					body += '</div>'
+
+					body += '<div class="row form-row" style="padding-top:10px;">'
+					body += '<div class="col-md-6" style="">'
+					body += '<select id="countryC" style="width:100%" >'
+					body += '<option selected disabled="disabled" value="empty">Select Country</option>'
+					body += '</select>'
+					body += '</div>'
+					body += '<div class="col-md-6" style="">'
+					body += '<select id="typeD" style="width:100%" >'
+					body += '<option selected disabled="disabled" value="empty">Select Delegate Type</option>'
+					body += '</select>'
+					body += '</div>'
+					body += '<div class="col-md-6" style="">'
+
+					body += '</div>'
+		    		body += '</div>'
+		    	
+		    	var button  = '<button type="button" class="btn btn-success" id="edit-save">Save</button>'
+					button += '<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>'
+
+		    	$("#aLoading").html("Saving...")	
+				$("#mTitle").html('Edit')
+				$("#mDesc").html(data.detail[0].fullname+" ("+data.detail[0].tag_code+")")
+				$("#mBody").html(body)
+				$("#mButton").html(button)
+
+
+				$("#fname").val(data.detail[0].fullname)
+				$("#design").val(data.detail[0].title)
+				$("#orga").val(data.detail[0].organization)
+				$("#delegate").val(data.detail[0].id)
+
+
+				var country = options(data.detail[1])
+				var type = options(data.detail[2])
+
+				$("#typeD").append(type)
+				$("#countryC").append(country)
+
+				$("#typeD").val(data.detail[0].participanttype_code)
+				$("#countryC").val(data.detail[0].nationality_code)
+
+				$("#typeD,#countryC").select2()
+
+
+				
+				
+			}else{
+				showErrorMessage("Something went wrong!\nPlease try again later");
+			}
+			
+		}).error(function(){
+			$(".nModal").show()
+			$("#loadAjaxSession").hide()
+			showErrorMessage("Something went wrong!\nPlease try again later");
+		});
+
+		
+}
+
+function options(data){
+	var option = ""
+	for(var i=0;i<data.length;i++){
+		option += '<option value="'+data[i].code+'">'+data[i].name+'</option>'
+	}
+
+	return option
+}
+</script>

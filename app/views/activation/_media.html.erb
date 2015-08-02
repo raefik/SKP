@@ -1,0 +1,127 @@
+<div class="page-title"> <i class="fa fa-video-camera"></i>
+	<h3>Medias</h3>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+      <div class="grid simple ">
+        <div class="grid-title">
+          <h4>All <span class="semi-bold">Participants</span></h4>
+          <div class="tools"> <a href="javascript:;" class="reload"></a></div>
+        </div>
+        <div class="grid-body ">
+          <table class="table table-hover table-condensed" id="activation">
+            <thead>
+              <tr>
+               	<th style="width:1%" data-hide="phone,tablet">No</th>
+                <th style="width:10%">Participant Name</th>
+                <th style="width:22%" data-hide="phone">Email</th>
+                <th style="width:10%" >Type</th>
+                <th style="width:10%" >Status</th>
+                <th style="width:10%" >Action</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            	<% 
+            	num = 1
+            	@registrations.each do|r| 
+				 	if  r.Register_status 
+				 		action = "<div class='fa-hover'><a href='#'><i class='fa fa-check-square-o'></i></a></div>"
+				 		status = "<span style='color:rgb(25, 155, 14)'>Registered</span>"
+				 	else  
+				 		action = ""
+				 		status = "<span style='color:rgb(255, 55, 55)'>Not Registered</span>"
+				 	end 
+
+				 	type = @lookup.find{|t|t.Lookup_Code == r.Register_Type}
+				%> 	
+	            <tr>
+	            	<td><%= num %></td>
+	                <td><%= r.Participant_Name %></td>
+	                <td class="v-align-middle"><span class="muted"><%= r.Participant_email %></span></td>
+	                <td><%= type.Lookup_Name == "Delegation" ? "Participant" : type.Lookup_Name.html_safe %></td>
+	                <td><%= status.html_safe %></td>
+	                <td><%= action.html_safe %></td>
+	            </tr>
+	            <% 
+	            	num=num+1
+	            end 
+	            %>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+<script type="text/javascript">
+window.onload = function(){
+	$("#menu-nav > li:nth(2)").addClass("active");
+
+
+
+	/** start datatable init **/
+	var responsiveHelper = undefined;
+    var breakpointDefinition = {
+        tablet: 1024,
+        phone : 480
+    };    
+	var tableElement = $('#activation');
+
+    tableElement.dataTable( {
+		"sDom": "<'row'<'col-md-6'l T><'col-md-6'f>r>t<'row'<'col-md-12'p i>>",
+			"oTableTools": {
+			"aButtons": [
+				{
+					"sExtends":    "collection",
+					"sButtonText": "<i class='fa fa-download'></i>",
+					"aButtons":    [ "csv", "xls", "pdf", "copy"]
+				}
+			]
+		},
+		"aLengthMenu": [[10, 20, 30, 40, -1], [10, 20, 30, 40,"All"]],
+        "iDisplayLength": 10,
+		"sPaginationType": "bootstrap",
+		//"aoColumnDefs": [
+        //  { 'bSortable': false, 'aTargets': [ 0 ] }
+		//],
+		"aaSorting": [[ 0, "asc" ]],
+		"oLanguage": {
+			"sLengthMenu": "_MENU_ ",
+			"sInfo": "Showing <b>_START_ to _END_</b> of _TOTAL_ participants"
+		},
+		 bAutoWidth     : false,
+        fnPreDrawCallback: function () {
+
+        },
+        fnRowCallback  : function (nRow) {
+
+        },
+        fnDrawCallback : function (oSettings) {
+
+        }
+	});
+	
+	$('#activation_wrapper .dataTables_filter input').addClass("input-medium "); // modify table search input
+    $('#activation_wrapper .dataTables_length select').addClass("select2-wrapper span12"); // modify table per page dropdown
+
+	
+	
+	$('#activation input').click( function() {
+        $(this).parent().parent().parent().toggleClass('row_selected');
+    });
+	
+	
+	$('#quick-access .btn-cancel').click( function() {
+		$("#quick-access").css("bottom","-115px");
+    });
+	$('#quick-access .btn-add').click( function() {
+		fnClickAddRow();
+		$("#quick-access").css("bottom","-115px");
+    });
+
+    /** end datatable init **/
+	 
+}
+</script>

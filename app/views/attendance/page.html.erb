@@ -1,0 +1,456 @@
+<div class="col-md-12 no-padding">
+
+	<div class="col-md-7 col-sm-7 hidden-sm">
+        <div class="col-md-12 m-b-20 no-padding">					
+			<div class="widget-item narrow-margin">
+				<div class="controller overlay right">
+					<a href="javascript:;" class="reload"></a>
+				</div>
+                <div class="tiles purple  overflow-hidden full-height" style="min-height:189px">
+                    <div class="tiles-body">
+					  	<h1 class="text-white m-l-20 m-r-20"> 
+					  		<span style="font-size:20px;">
+					  		<%= @room.name %> Room Now :</span><br/>
+					  		<span class="semi-bold" id="titleEvent"></span> 
+					  	</h1>
+					</div>
+                </div>
+                <div class="tiles white" style="min-height:588px;">
+                    <div class="tiles-body">
+                      	<div class="row">
+
+                      		<div class="col-md-5 col-vlg-5" style="margin-top: -29px !important;">
+						        <ul class="cbp_tmtimeline">
+						            
+	
+						        <% 
+						        if !@todayevent.nil?
+						        	@todayevent.each do|te| 
+						        %>
+						            <li>
+						              	<time class="cbp_tmtime" datetime="2013-04-10 18:30">
+						                	<span class="date"></span>
+						                	<span class="time">
+						                		<span class="semi-bold" style="font-size: medium;">
+						                			<%= te.slot.start.strftime("%I:%M") %>
+						                		</span>
+						                		<%= te.slot.start.strftime("%p") %>
+						                	</span>
+						              	</time>
+						              	<div class="cbp_tmicon info animated bounceIn"> 
+						              		<i class="fa fa-quote-left"></i>
+						              	</div>
+						              
+						              	<div class="cbp_tmlabel">
+						                	<div class="p-t-10 p-l-30 p-r-20 p-b-20 xs-p-r-10 xs-p-l-10 xs-p-t-5">
+							                  	<h4 class="inline m-b-5">
+							                  		<span class="text-success semi-bold"><%= te.theme %></span>
+							                  	</h4>
+						                	</div>
+
+						              	</div>
+						            </li>
+						        <% 
+						        	end
+						        end 
+						        %>
+								
+						         
+						        </ul>
+						    </div>
+
+
+						    <div class="col-md-7 col-sm-7" data-aspect-ratio="true" style="height:554px !important;" >
+						        <div class="live-tile slide ha " data-speed="750" data-delay="7000" data-mode="carousel">
+								    
+						        <% 
+						        if !@todayevent.nil?
+						        @todayevent.each do|t| 
+						        %>
+								    <div class="slide-back ha tiles" style="background-color:silver;">
+							            <div class="user-comment-wrapper m-t-20" style="text-align:center !important;">
+							            	<span class="bold" style="font-size:25px;color:#353535 !important;">
+					                			<%= t.theme %>
+					                		</span>
+							                <hr/>
+							                <div class="" style="text-align:center;">
+							                	<div class="user-name text-white">
+							                		<span class="bold" style="font-size:25px;color:sienna;">
+							                			<%= t.slot.start.strftime("%I:%M %p")%> - <%= t.slot.end.strftime("%I:%M %p")%>
+							                		</span>
+							                		<p class="text-white" style="font-size:15px;padding-top:10px;">
+							                
+							                		</p>
+							                	</div>
+							                  	
+							                </div>
+							                <hr/>
+							                <div style="font-size:15px;padding:1px 10px;text-align:left;" class="row">
+							                	<% t.trackspeakers.each do|ts| %>
+								                <div class="user-profile-pic col-md-6 col-sm-6" style="margin-top:10px!important;text-align:left;">
+			                						<div style="display:inline-block !important;">
+			                			  				<img src="/assets/speaker/profile/<%= ts.presenter.registration.image %>" style="width:55px;height:55px;" >
+						                			</div>
+						                			<div style="display:inline-block !important;vertical-align:middle;">
+						                			<p class="" style="text-align:left;color:darkslategrey;font-size:14px;">
+						                				<b><%= ts.presenter.registration.fullname %> (<%= ts.trackrole.name %>)</b><br/>
+						                				<%= if !ts.presenter.registration.title.blank? 
+						                					 raw ts.presenter.registration.title+", <br/>"
+						                					end
+						                				%>
+						                				<%= if !ts.presenter.registration.organization.blank? 
+						                						ts.presenter.registration.organization+", "
+						                					end
+						                				%>
+						                				<%= ts.presenter.registration.nationality.name.titleize %>
+						                			</p>
+						                			</div>
+						                			
+						                		</div>			
+
+						                		<% end %>
+					                		</div>
+							                <div class="clearfix"></div>
+							            </div>
+						            </div>
+						        <% 
+						        	end 
+						        end
+						        %>
+
+						        </div>
+						    </div>
+
+                        	<div class="clearfix"></div>
+	       
+                  		</div>
+                  	
+                	</div>  
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	<div class="col-md-5">
+		<div class="row  ">
+			<div class="col-md-6 col-sm-6">
+		        <div class="col-md-12 col-xs-12 no-padding">
+		        	<div class="tiles white text-center">
+		            	<h4 class="semi-bold text-success  no-margin p-t-20 ">
+		            		<i class="fa fa-users fa-4x"></i>
+		            	</h4>
+		            	<div class="tiles-title blend p-b-25" style="font-size: 20px;">Current Speaker</div>
+		          	</div>
+			    </div>
+		    </div>
+
+		    <div class="col-md-6">
+				<div class="row  tiles-container">    
+			        <div class="col-md-5 col-xs-5 no-padding">
+				        <div class="tiles white text-center">
+				            <h2 class="semi-bold text-primary weather-widget-big-text no-margin p-t-35 p-b-10">
+				            	<%= @time.strftime("%d")%>
+				            </h2>
+				            <div class="tiles-title blend p-b-25" style="font-size: 20px;"><%= @time.strftime("%B").upcase %></div>
+				           
+				        </div>
+			        </div>
+					<div class="col-md-7 col-xs-7 no-padding">
+			        	<div class="tiles blue text-center">
+			            	<h2 id="realtime" date="<%= @time.strftime("%Y-%m-%d %H:%M")%>" class="semi-bold text-white weather-widget-big-text no-margin p-t-35 p-b-10"></h2>
+			            	<div class="tiles-title blend p-b-25" style="font-size: 20px;"><%= @time.strftime("%^A")%></div>
+			          	</div>
+			        </div>
+			    </div>
+			</div>
+		</div>
+		<div class="row no-padding">
+			<div class="col-md-6 col-sm-6" data-aspect-ratio="true" style="height:350px !important;" >
+		        <div class="live-tile slide ha " id="currentSpk" data-speed="750" data-delay="4000" data-mode="carousel">
+		         </div>
+		    </div>
+
+		    <div class="col-md-6 col-sm-6" >
+		        <div class="col-md-12 col-xs-12 no-padding">
+		        	<div class="tiles white text-center" style="height:350px !important;">
+		            	<div class="bold no-margin" style="color:rgb(255, 143, 0);font-size:10em;padding-top: 50px;">
+		            		<font id="seat">100</font>
+		            	</div>
+		            	<div class="tiles-title blend" style="font-size:3em;margin-top: -45px;padding-bottom: 45px;">Seat(s) Left</div>
+		          	</div>
+			    </div>
+		    </div>
+
+		</div>
+
+		<div class="row">
+
+		    <div class="col-md-12 col-sm-6 p-t-20">
+		        <div class="col-md-12 col-xs-12 no-padding" >
+		        	<div class="tiles green animated bounceIn" style="min-height:260px;" id="greeting">
+		        		<div class="tiles-title blend p-t-10 p-t-20 p-l-60 p-r-60" style="font-size:30px;">
+		            		<span id="welcome" style=""></span> <input type="text" class="rfidReader" />
+		            	</div>
+		            	<div class="no-margin p-l-60 p-r-60" style="font-size:50px;margin-top: -25px;padding-bottom: 45px;" id="participant">
+		            		
+		            	</div>
+		            	
+		          	</div>
+			    </div>
+		    </div>
+
+		</div>
+	</div>
+
+</div>
+
+<input type="hidden" id="eid" value="none">
+
+<script type="text/javascript">
+window.onload = function(){
+	clockRealTime($("#realtime"),$("#realtime").attr("date") );
+
+	$(".live-tile,.flip-list").liveTile();
+
+	var eventtime = <%= raw !@start.nil? ? @start : "\"none\""%>;
+
+	changeEvent("<%= @now %>")
+
+	if(eventtime!="none"){		
+		setInterval(function(){
+			checkeventnow(eventtime);
+		}, 900);
+	}
+
+
+	$(".rfidReader").focus()
+
+	$(".rfidReader").blur(function(){
+		$(".rfidReader").focus()
+	})
+
+	var timeO
+	$(".rfidReader").keypress(function (e) {
+	    if (e.which == '13') {
+	    	var rfid = $(this).val()
+
+			if($("#eid").val()=="none"){
+					animate("#greeting","shake")
+					showErrorMessage("No event!");
+			}
+	    	else if(isNaN(rfid)||rfid==""){
+	    		showErrorMessage("Invalid RFID!");
+	    		animate("#greeting","shake")
+	    	}else{
+	    		
+	    		$.ajax({
+				  	url: "/check-in.html",
+				  	type: "post",
+				  	data:{
+				  		eid: $("#eid").val(),
+				  		rfid: rfid,
+				  	},
+				  	headers: {
+			            'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+			        },
+				}).success(function(data) {
+
+					if(data.status !="error"){
+						
+						var seat = parseInt($("#seat").html())
+						
+						if(seat !=0){
+							if(data.status == "successIn"){
+								seat = seat-1
+							}else{
+								seat = seat+1
+							}
+							$("#seat").html(seat)
+							timeO = checkin(data.msg,data.greet,timeO)
+						}else if(data.status == "successOut"){
+							$("#welcome").html("Room Full")
+							animate("#titleEvent","shake")
+							clearTimeout(timeO)
+							timeO = setTimeout(function(){
+								//animate("#participant,#welcome","fadeOut")
+								$("#welcome").html("")
+								$("#participant").html("")
+							},5000)
+						}
+					}else{
+						animate("#greeting","shake")
+						showErrorMessage(data.msg);						
+					}
+				
+				}).error(function(){
+					showErrorMessage("Something went wrong!\nPlease contact administrator");
+				});
+				
+	    	}
+	    	
+
+	    	$(this).val("");
+	    }
+	})
+
+	setTimeout(function(){
+		$("#greeting").removeClass("bounceIn").removeClass("animated")
+	},1000)
+}
+
+
+
+function checkeventnow(today){
+	var now = new Date();
+	var h = now.getHours()
+	var m = now.getMinutes()
+	var s = now.getSeconds()
+
+    h = ( h < 10 ? "0" : "" ) + h;	
+	m = ( m < 10 ? "0" : "" ) + m;
+	s = ( s < 10 ? "0" : "" ) + s;
+
+	var timenow = h+":"+m
+
+	for(var i=0; i<today.length;i++){
+		
+		if(timenow == today[i] && s == "00"){
+			changeEvent(today[i]);
+			break;
+		}
+	}
+}
+
+function changeEvent(time){
+	//console.log(time)
+
+	$.ajax({
+	  	url: "/get-event-now.html",
+	  	type: "get",
+	  	data:{
+	  		now: time,
+	  		room: "<%= params[:room] %>",
+	  		adv: "15"
+	  	}
+	}).success(function(data) {
+		changeE(data);
+	}).error(function(){
+		showErrorMessage("Something went wrong!\nPlease refresh the page");
+	});
+
+}
+
+function changeE(e){
+
+	console.log(e)
+	var title = ""
+	var eid = ""
+	var seat = ""
+	var spk = ""
+	$("#currentSpk").liveTile("destroy",true);
+
+
+	if(e.status == "success"){
+		title = e.now.theme
+		eid = e.now.eid
+		seat = e.now.room
+		spk = listspeaker(e.now.speaker)
+	}else{
+		title = e.msg
+		eid = "none"
+		seat = "0"
+		spk = listspeaker("none")
+	}	
+
+	$("#titleEvent").html(title);
+	$("#eid").val(eid)
+	animate("#titleEvent","fadeIn")
+	$("#seat").html(seat)
+	$("#currentSpk").html("")
+	$("#currentSpk").append(spk)
+
+	$("#currentSpk").liveTile();
+}
+
+function checkin(name, greet, timeO){
+	
+	$("#welcome").html(greet)
+	$("#participant").html(name)
+	animate("#greeting","bounce")
+	clearTimeout(timeO)
+	timeO = setTimeout(function(){
+		//animate("#participant,#welcome","fadeOut")
+		$("#welcome").html("")
+		$("#participant").html("")
+	},5000)
+
+	return timeO
+}
+
+function animate(element,animate){
+	$(element).addClass("animated "+animate)
+	setTimeout(function(){
+		$(element).removeClass("animated "+animate)
+	},1000)
+}
+
+function listspeaker(spk){
+
+	var out = ""
+
+	if(spk != "none"){
+		for(var i =0;i<spk.length;i++){
+			console.log(spk[i])
+		    out += '<div class="slide-back ha tiles red">'
+			out += '<div class="user-comment-wrapper m-t-20" style="text-align:center !important;">'
+			out += '<span class="bold" style="font-size:25px">'
+			out += spk[i].role
+		    out += '</span>'
+			out += '<div class="user-profile-pic" style="margin-top:10px!important;">'
+			out += '<img src="/assets/speaker/profile/'+spk[i].pic+'" style="width:150px;height:150px" >'
+			out += '</div>'
+			out += '<div class="" style="text-align:center;">'
+			out += '<div class="user-name text-white">'
+			out += '<span class="bold" style="font-size:25px;">'
+			out += spk[i].fullname
+			out += '</span>'
+			out += '<p class="text-white" style="font-size:15px;padding-top:10px;">'
+			out += spk[i].desc
+			out += '</p>'
+			out += '</div>'
+			out += '</div>'
+			out += '<div class="clearfix"></div>'
+			out += '</div>'
+			out += '</div>'
+		}
+	}else{
+
+		out += '<div class="slide-back ha tiles red">'
+		out += '<div class="user-comment-wrapper m-t-20" style="text-align:center !important;">'
+		out += '<span class="bold" style="font-size:25px">'
+		//out += Role name 
+	    out += '</span>'
+		out += '<div class="user-profile-pic" style="margin-top:10px!important;">'
+		out += '<img src="/assets/speaker/profile/default.jpg" style="width:150px;height:150px" >'
+		out += '</div>'
+		out += '<div class="" style="text-align:center;">'
+		out += '<div class="user-name text-white">'
+		out += '<span class="bold" style="font-size:25px;">'
+		out += 'No Current Speaker'
+		out += '</span>'
+		out += '<p class="text-white" style="font-size:15px;padding-top:10px;">'
+		//out += '<b>'+title+'</b>,<br/>'
+		//out += organization+',<br/>'+nationality
+		out += '</p>'
+		out += '</div>'
+		out += '</div>'
+		out += '<div class="clearfix"></div>'
+		out += '</div>'
+		out += '</div>'
+	}
+	return out	
+}
+
+
+
+</script>

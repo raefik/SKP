@@ -1,0 +1,192 @@
+<div class="page-title">
+	<i class="icon-custom-chart"></i>
+	<h3>Statistics</h3>
+</div>
+<div class="row-fluid">
+    <div class="span12">
+      <div class="grid simple ">
+        <div class="grid-title">
+          	<h4>
+          		All <span class="semi-bold">Statistics</span>
+          	</h4>
+          	<div class="tools"> <a href="javascript:;" class="reload"></a></div>
+        </div>
+        <div class="grid-body ">
+
+	        <div class="grid simple">
+	            <div class="grid-title no-border">
+	            	<h4><span class="semi-bold">Room Attendance</span></h4>
+	            </div>
+	            <div class="grid-body no-border">
+	              	<h4>
+	              		Statistic participation on 
+	              		<select id="sDate">
+	              			<option disabled="true">Select Date</option>
+	              			<% @date.each do |d| %>
+	              			<option id="<%= d.id %>"><%= d.date.strftime("%d %B %Y") %></option>
+	              			<% end %>
+	              		</select>
+	              	</h4>
+	              	<br/>
+	             	<div id="placeholder-bar-chart" style="height:250px"></div>
+	            </div>
+	        </div>
+
+        </div>
+      </div>
+    </div>
+</div>
+
+<script src="assets/plugins/jquery-ricksaw-chart/js/d3.v2.js"></script>
+<script src="assets/plugins/jquery-ricksaw-chart/js/rickshaw.min.js"></script>
+<script src="assets/plugins/jquery-morris-chart/js/morris.min.js"></script>
+<script src="assets/plugins/jquery-easy-pie-chart/js/jquery.easypiechart.min.js"></script>
+<script src="assets/plugins/jquery-flot/jquery.flot.js"></script>
+<script src="assets/plugins/jquery-flot/jquery.flot.time.min.js"></script>
+<script src="assets/plugins/jquery-flot/jquery.flot.selection.min.js"></script>
+<script src="assets/plugins/jquery-flot/jquery.flot.animator.min.js"></script>
+<script src="assets/plugins/jquery-flot/jquery.flot.orderBars.js"></script>
+<script src="assets/plugins/jquery-sparkline/jquery-sparkline.js"></script>
+<script src="assets/plugins/jquery-easy-pie-chart/js/jquery.easypiechart.min.js"></script>
+
+<script type="text/javascript">
+window.onload = function(){
+	$("#menu-nav > li:nth(3)").addClass("active");
+
+	$("#sDate").select2()
+
+	var d1_1 = [
+        [1324576000000, 0],
+        [1328254400000, 70],
+        [1330750000000, 45],
+        [1333458400000, 60],
+        [1336038400000, 98],
+    ];
+ 
+    var d1_2 = [
+        [1324576000000, 0],
+        [1328254400000, 60],
+        [1330750000000, 50],
+        [1333458400000, 95],
+        [1336038400000, 80],
+    ];
+ 
+    var d1_3 = [
+        [1324576000000, 0],
+        [1328254400000, 40],
+        [1330750000000, 10],
+        [1333458400000, 80],
+        [1336038400000, 98],
+    ];
+
+    var d1_4 = [
+        [1324576000000, 0],
+        [1328254400000, 44],
+        [1330750000000, 36],
+        [1333458400000, 28],
+        [1336038400000, 98],
+    ];
+
+    var d1_5 = [
+        [1324576000000, 0],
+        [1328254400000, 48],
+        [1330750000000, 32],
+        [1333458400000, 24],
+        [1336038400000, 98],
+    ];
+
+    var d1_6 = [
+        [1325376000000, 0],
+        [1328254400000, 40],
+        [1330750000000, 50],
+        [1333458400000, 50],
+        [1336038400000, 98],
+    ];
+    var d1_7 = [
+        [1324576000000, 150],
+    ];
+
+    var d1_8 = [
+        [1324576000000, 132],
+    ];
+ 
+    var data1 = [
+    <% 	
+    	color = Array.new
+    	color.push("rgba(243, 89, 88, 0.7)")
+    	color.push("rgba(251, 176, 94, 0.7)")
+    	color.push("rgba(10, 166, 153, 0.7)")
+    	color.push("rgba(243, 189, 248, 0.7)")
+    	color.push("rgba(250, 230, 30, 0.7)")
+    	color.push("rgba(160, 202, 50, 0.7)")
+    	color.push("rgba(213, 81, 288, 0.7)")
+    	color.push("rgba(21, 176, 254, 0.7)")
+    	
+
+    	i = 0
+    %>
+    <% @room.each do |r| %>
+        {
+            label: "<%= r.name %> Room",
+            data: d1_<%= i+1 %>,
+            bars: {
+                show: true,
+                barWidth: 12*24*60*60*250,
+                fill: true,
+                lineWidth:0,
+                order: <%= i+1 %>,
+                fillColor:  "<%= color[i] %>"
+            },
+            color: "<%= color[i] %>"
+        },
+    <% i = i+1 %>
+    <% end %>    
+   
+    ];
+
+	$.plot($("#placeholder-bar-chart"), data1, {
+        xaxis: {
+            min: (new Date(2011, 11, 15)).getTime(),
+            max: (new Date(2012, 04, 18)).getTime(),
+            mode: "time",
+            timeformat: "%b",
+            tickSize: [1, "month"],
+
+            monthNames: [
+            <% 
+            	@slot.each do |s| 
+             		st = DateTime.parse(s.start.strftime("%H:%M"))
+					en = DateTime.parse(s.end.strftime("%H:%M"))
+			%>
+            	'<%= st.strftime("%H:%M")+"-"+en.strftime("%H:%M") %>',
+            <% end %>
+            ],
+            
+
+            tickLength: 0, // hide gridlines
+            axisLabel: 'Month',
+            axisLabelUseCanvas: true,
+            axisLabelFontSizePixels: 12,
+            axisLabelFontFamily: 'Verdana, Arial, Helvetica, Tahoma, sans-serif',
+            axisLabelPadding: 4,
+        },
+        yaxis: {
+            axisLabel: 'Value',
+            axisLabelUseCanvas: true,
+            axisLabelFontSizePixels: 12,
+            axisLabelFontFamily: 'Verdana, Arial, Helvetica, Tahoma, sans-serif',
+            axisLabelPadding: 5
+        },
+        grid: {
+            hoverable: true,
+            clickable: false,
+            borderWidth: 1,
+			borderColor:'#f0f0f0',
+			labelMargin:8,
+        },
+        series: {
+            shadowSize: 1
+        }
+    });
+}
+</script>

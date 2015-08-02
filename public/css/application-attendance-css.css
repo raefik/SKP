@@ -1,0 +1,19 @@
+/** BEGIN CSS FRAMEWORK **/
+	@import url("plugins/jquery-metrojs/MetroJs.css");
+	@import url("plugins/pace/pace-theme-flash.css");
+	@import url("plugins/pace/pace-theme-flash.css");
+	@import url("plugins/jquery-notifications/css/messenger.css");
+	@import url("plugins/jquery-notifications/css/messenger-theme-flat.css");
+	@import url("plugins/jquery-slider/css/jquery.sidr.light.css");
+	@import url("plugins/boostrapv3/css/bootstrap.min.css");
+	@import url("plugins/boostrapv3/css/bootstrap-theme.min.css");
+	@import url("plugins/font-awesome/css/font-awesome.css");
+	@import url("animate.min.css");
+	@import url("styles.css");
+	@import url("responsive-attendance.css");
+	@import url("custom-icon-set.css");
+/** END CSS FRAMEWORK **/
+
+
+
+

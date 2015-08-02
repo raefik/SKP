@@ -1,0 +1,402 @@
+<div class="page-title">
+	<% if params[:list].nil?  %>
+		<%= home_icon %>
+		<h3>
+			<%= session[:home].capitalize rescue " " %>s
+		</h3>
+	<% else %>
+		<%=
+		if params[:list] == "staff"
+			media_icon.html_safe
+		elsif params[:list] == "speaker"
+			speaker_icon.html_safe
+		else
+			delegation_icon.html_safe
+		end	
+		%>		
+		<h3>
+			<%= params[:list].capitalize rescue " " %>s
+		</h3>
+	<% end %>		
+</div>
+<%
+	if params[:list].nil? 
+		output = session[:home].capitalize rescue " " 
+	else 
+		output = params[:list].capitalize rescue " "
+	end
+%>
+
+<div class="row-fluid">
+    <div class="span12">
+      <div class="grid simple ">
+        <div class="grid-title">
+          <h4>
+          		All <span class="semi-bold"><%= output %></span> Delegates
+          </h4>
+          <div class="tools"> <a href="javascript:;" class="reload"></a></div>
+        </div>
+        <div class="grid-body ">
+          <table class="table table-hover table-condensed footable toggle-arrow-tiny" id="table1">
+            <thead>
+              <tr>
+                <th style="width:15%" data-hide="phone">Tag Code</th>
+                <th style="width:20%">Name</th>
+                <th style="width:20%">Designation</th>
+                <th style="width:20%">Organization</th>
+                <th style="width:20%" data-hide="phone,tablet">Country</th>  
+                <!--<th style="width:10%" data-hide="phone,tablet">Email</th>-->
+                <th style="width:10%" data-hide="phone">Type</th>
+                <th style="width:10%" data-hide="phone,tablet">Registration Status</th>
+                <th style="width:5%">Activation</th>
+              </tr>
+            </thead>
+            <tbody>
+            	<%# 
+     			#num = 1
+            	#@registrations.each do|r| 
+				# 	#if  r.Register_status 
+				# 		status = "<span style='color:rgb(25, 155, 14)'>Registered</span>"
+				# 	#else  
+				# 	#	status = "<span style='color:rgb(255, 55, 55)'>Not Registered</span>"
+				# 	#end 
+				#
+				#	type = @lookup.find{|t|t.Lookup_Code == r.Register_Type}
+				%>
+	            <!--
+	            <tr>
+	                <td><%# num %></td>
+	                <td><%# r.Participant_IC %></td>
+	                <td><%# r.Participant_Name %></td>
+	                <td class="v-align-middle"><span class="muted"><%# r.Participant_email %></span></td>
+	                <td><%# type.Lookup_Name.html_safe %></td>
+	                <td><%# status.html_safe %></td>
+	            </tr>
+	            -->
+	            <%# 
+	            #num=num+1
+
+	            #end 
+	            %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+<script type="text/javascript">
+window.onload = function(){
+	update_queue();
+
+	var navigation = <%=
+
+	    if params[:list].nil?
+	    	active = session[:home]
+	    else 
+	    	active = params[:list]
+	    end
+
+		if active == "staff"
+			'$("#menu-nav > li:nth(2)")'.html_safe
+		elsif active == "speaker"
+			'$("#menu-nav > li:nth(1)")'.html_safe
+		elsif active == "participant"
+			'$("#menu-nav > li:nth(0)")'.html_safe
+		end	
+	%>;
+	//$("#menu-nav > li:nth(0)").addClass("active");
+	navigation.addClass("active");
+
+   	//init footable for responsive
+  	$('#table1').footable({
+		breakpoints: {
+			phone : 480,
+		    tablet: 840
+		  }
+	});
+
+	/** start datatable init **/
+	var tableElement = $('#table1');
+
+    tableElement.dataTable( {
+		"sDom": "<'row'<'col-md-6'l T><'col-md-6'f>r>t<'row'<'col-md-12'p i>>",
+		"oTableTools": {
+			"sSwfPath": "/assets/plugins/dataTableTools/media/swf/copy_csv_xls_pdf.swf",
+			"aButtons": [
+				{
+					"sExtends":    "collection",
+					"sButtonText": "<i class='fa fa-download'></i>",
+					"aButtons": [ 
+						{
+							"sExtends" : "xls",
+							"mColumns" : [ 0, 1, 2, 6 ],
+							"sFileName": "*.xls",
+							"fnClick": function( nButton, oConfig, flash ){
+	                            flash.setFileName("List_of_Delegate_(<%= output %>).xls" ) 
+	                            this.fnSetText( flash,
+							        "List of Delegate (<%= output %>)\n\n"+
+							        "Showing "+tableElement.fnSettings().aoData.length+" of "+tableElement.fnSettings().fnRecordsTotal()+" participant(s)\n\n"+
+							        this.fnGetTableData(oConfig)
+							    );        
+	                        }
+						},
+						{
+							"sExtends" : "pdf",
+							"sTitle"   : "List of <%= output %>s",
+							"mColumns" : [ 0, 1, 2, 6 ],
+							"fnClick": function( nButton, oConfig, flash ){
+	                            flash.setFileName("List_of_Delegate_(<%= output %>).pdf" ) 
+	                            this.fnSetText( flash,
+							        "title:"+ "List of Delegate (<%= output %>)" +"\n\n"+
+							        "message:"+ "Showing "+tableElement.fnSettings().aoData.length+" of "+tableElement.fnSettings().fnRecordsTotal()+" participant(s)\n\n"+ 
+							        "colWidth:"+ this.fnCalcColRatios(oConfig) +"\n"+
+							        "orientation:"+ oConfig.sPdfOrientation +"\n"+
+							        "size:"+ oConfig.sPdfSize +"\n"+
+							        "--/TableToolsOpts--\n" +
+							        this.fnGetTableData(oConfig)
+							    );        
+	                        }
+						}, 
+						"copy"
+					]
+				}
+			],
+		},
+		"aoColumnDefs": [{ 
+			"bSortable": false, "aTargets": [ 5,6,7 ] 
+		}],
+		"bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "/get-participants.html?list=<%= params[:list].nil? ? session[:home] : params[:list] %>",
+        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
+        	//var list = [{"list": "<%= params[:list].nil? ? session[:home] : params[:list] %>"}];
+        	//aoData.push(list);
+
+	      oSettings.jqXHR = $.ajax( {
+	        "dataType" : 'json',
+	        "url" : sSource,
+	        "data" : aoData,
+	        "success" : fnCallback,
+	        "type": "POST",
+	        "headers": {
+		            	'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+		        	},
+	        //"beforeSend" :  function(xhr){
+	        					//if(xhr && xhr.readystate != 4){
+						        //    xhr.abort();
+						        //}
+	        //				},
+	      } );
+	    },
+		"aLengthMenu": [[10, 20, 30, 40, -1], [10, 20, 30, 40,"All"]],
+        "iDisplayLength": 10,
+		"sPaginationType": "bootstrap",
+		//"aoColumnDefs": [
+        //  { 'bSortable': false, 'aTargets': [ 0 ] }
+		//],
+		"aaSorting": [[ 0, "asc" ]],
+		"oLanguage": {
+			"sLengthMenu": "_MENU_ ",
+			"sInfo": "Showing <b>_START_ to _END_</b> of _TOTAL_ participants"
+		},
+		"oLanguage": {
+			"sSearch": "SEARCH: "
+		},
+		"deferRender": true,
+		"deferLoading": 57,
+		bAutoWidth     : false,
+        fnPreDrawCallback: function () {
+        	$('.dataTables_filter input').attr("placeholder", "TAG CODE / NAME");
+        	$('.dataTables_filter input').attr("style", "text-align:center;color:#777");
+        },
+        fnRowCallback  : function (nRow) {
+
+        },
+        fnDrawCallback : function (oSettings) {
+        	$(".act").parent().parent().attr("style","background-color:rgba(175, 255, 168, 0.23) !important;")
+        }
+	});
+	
+	tableElement.fnSetFilteringDelay();
+	
+	$('#table1_wrapper .dataTables_filter input').addClass("input-medium "); // modify table search input
+    $('#table1_wrapper .dataTables_length select').addClass("select2-wrapper span12"); // modify table per page dropdown
+	
+	$('#table1 input').click( function() {
+        $(this).parent().parent().parent().toggleClass('row_selected');
+    });
+	
+	
+	$('#quick-access .btn-cancel').click( function() {
+		$("#quick-access").css("bottom","-115px");
+    });
+	$('#quick-access .btn-add').click( function() {
+		fnClickAddRow();
+		$("#quick-access").css("bottom","-115px");
+    });
+    /** end datatable init**/
+
+    /** start clicked activation action**/
+    $(".activation, .participant-details-wrapper").live("click",function(){
+    	$("#pName").val("")
+    	$("#pRegid").val("")
+    	
+    	if($(this).attr("from")=="table"){
+    		var name = $(this).parent().parent().find("td:nth-child(2)").html()
+    	}else{
+    		var name = $(this).find(".participant-name b").html()
+    	}
+
+    	$("#pRegid").val($(this).attr("regid"))
+    	$("#pName").attr('placeholder',name.toUpperCase())
+    	$("#pName").attr('name',name)
+    	$('#activateRFID').modal("show")
+		$("#pName").focus()
+	});
+	/** end clicked activation action**/
+
+	/** start touched rfid**/
+	$("#pName").keypress(function (e) {
+	    if (e.which == '13'){
+	    	var name = $("#pName").attr('name')
+	    	var regid = $("#pRegid").val()
+	    	var rfid = $("#pName").val()
+	    	activaterfid(rfid,regid,name);
+	    }
+	})
+ 	/** end touched rfid**/
+
+ 	/** start search queue**/
+	$("#searchQ").keyup(function (e) {
+		sortqueuename($(this).val());
+	})
+	/** end search queue**/
+
+	/** start node js init**/
+	var socket = io.connect('<%= nodeserver %>');
+    socket.on('listen-queue-<%= session[:role] %>', function (data){	
+		update_queue();
+    	tableElement.fnDraw();
+		console.log(data);
+    })
+    /** end node js init**/
+
+}
+
+function update_queue(){
+	$.ajax({
+	  	url: "/update-queue.html",
+	  	type: "post",
+        data: {
+            type: "<%= session[:role] %>",
+        },
+        headers: {
+            'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+        },
+	}).success(function(data) {
+		$("#chat-message-count").html(data.count);
+		$("#queueList").find("div").remove()
+		if(data.count !=0 ){
+			$("#chat-message-count").addClass("bounceIn");
+			$("#chat-message-count").show();
+			$.sidr('open', 'sidr');
+			
+			var out = ""
+			for(var i=0;i<data.count;i++){
+				var queue = queuelist(data.queue[i].regid,data.queue[i].fullname,data.queue[i].tag,data.queue[i].country)
+				out += queue
+			}
+			$("#queueList").append(out);
+
+		}else{			
+			$("#chat-message-count").removeClass("bounceIn");
+			$("#chat-message-count").hide();
+			$.sidr('close', 'sidr');		
+		}
+
+
+	}).error(function(){
+		showErrorMessage("Something went wrong!\nCannot update queue");
+	});
+}
+
+function queuelist(regid,name,tag,country){
+
+	var out  = ""
+		out +=	'<div class="participant-details-wrapper fadeIn animated pQ" regid="'+regid+'" from="queue" >'
+		out +=	'<div class="participant-details">'
+		out +=	'<div class="participant-more tag-code">'+tag+'</div>'
+		out +=	'<div class="participant-name"><b>'+name+'</b></div>'
+		out +=	'<div class="participant-more country">'+country+'</div>'
+		out +=	'</div>'
+		out +=	'<div class="clearfix"></div>'
+		out +=	'</div>'
+
+	return out
+}
+
+function sortqueuename(input){
+	$(".pQ").each(function(index){	
+		if(input!=""){		
+			var name = $(this).find(".participant-name").html()
+			var tag = $(this).find(".tag-code").html()
+			var country = $(this).find(".country").html()
+
+			var regex = new RegExp(input,"gi");
+			
+			if(name.match(regex)==null && tag.match(regex)==null && country.match(regex)==null){ 
+				$(this).hide(); 
+			}
+			else{$(this).show();}
+		}else{
+			$(this).show()
+		}
+
+	})
+}
+
+function activaterfid(rfid,regid,name){
+	$(".modal-dialog").hide()
+	$("#loadAjax").show()
+
+	$.ajax({
+	  	url: "/activate-rfid.html",
+	  	type: "post",
+        data: {
+            regid: regid,
+            rfid: rfid,
+        },
+        headers: {
+            'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+        },
+	}).success(function(data) {
+		$(".modal-dialog").show()
+	    $("#loadAjax").hide()
+
+	    if(data.activate){
+	    	var socket = io.connect('<%= nodeserver %>');
+			socket.emit('push-queue', { message: data.node.push , regid: data.node.regid });
+			
+		    $('#activateRFID').modal("hide")
+
+			//datatable.dataTable().fnDraw();
+			$('#table1').dataTable().fnDraw();
+			update_queue()
+			$('#activateRFID').modal("hide");
+			showSuccess(name+" successfully activated");
+		}
+		else{
+			$("#pName").focus();
+			$("#pName").val("")
+			showErrorMessage("Something went wrong!\n"+data.message);
+		}
+	}).error(function(){
+		$(".modal-dialog").show()
+	    $("#loadAjax").hide()
+	    $("#pName").focus();
+		$("#pName").val("")
+		showErrorMessage("Cannot activate RFID!\nPlease try again later");
+	});
+}
+
+</script>

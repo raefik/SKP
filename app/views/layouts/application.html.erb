@@ -1,0 +1,404 @@
+<% user? %>
+
+<!DOCTYPE html>
+<html>
+<head>
+  	<title>Attendance System</title>
+  		<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta content="" name="description" />
+		<meta content="" name="author" />
+
+		<!-- BEGIN ONE LINK TO INCLUDE ALL CSS -->
+		<link href="assets/application-css.css" rel="stylesheet" type="text/css"/>
+		<!-- END ONE LINK TO INCLUDE ALL CSS -->
+
+		<!-- BEGIN ONE LINK TO INCLUDE ALL CORE JS FRAMEWORK--> 
+		<script src="assets/application-js.js" type="text/javascript"></script> 
+		<!-- END ONE LINK TO INCLUDE ALL CORE JS FRAMEWORK --> 
+		
+		<!-- BEGIN CORE TEMPLATE JS --> 
+		<script src="assets/core.js" type="text/javascript"></script> 
+		<script src="assets/chat.js" type="text/javascript"></script> 
+		<script src="assets/demo.js" type="text/javascript"></script> 
+		<!-- END CORE TEMPLATE JS --> 
+
+		<script src="<%= nodeserver %>/socket.io/socket.io.js" type="text/javascript"></script> 
+
+
+</head>
+<body>
+	<!-- BEGIN FLASH MESSAGE -->
+	<% flash.each do |name, msg| %>
+      <%= content_tag :div, msg, :id => "flash_#{name}",:style => "display:none" %>
+    <% end %>
+    <!-- END FLASH MESSAGE -->
+
+
+	<!-- BEGIN HEADER -->
+	<div class="header navbar navbar-inverse"> 
+		<!-- BEGIN TOP NAVIGATION BAR -->
+		<div class="navbar-inner">
+			<!-- BEGIN NAVIGATION HEADER -->
+			<div class="header-seperation"> 
+				<!-- BEGIN MOBILE HEADER -->
+				<ul class="nav pull-left notifcation-center" id="main-menu-toggle-wrapper" style="display:none">	
+					<li class="dropdown">
+						<a id="main-menu-toggle" href="#main-menu" class="">
+							<div class="iconset top-menu-toggle-white"></div>
+						</a>
+					</li>		 
+				</ul>
+				<!-- END MOBILE HEADER -->
+				<!-- BEGIN LOGO -->	
+				<a href="/">
+					<img src="assets/logo_1.png" class="logo" alt="" data-src="assets/logo_1.png" width="106"/>
+				</a>
+				<!-- END LOGO --> 
+				<!-- BEGIN LOGO NAV BUTTONS -->
+				<ul class="nav pull-right notifcation-center">	
+					<li class="dropdown" id="header_task_bar">
+						<a href="/" class="dropdown-toggle active" data-toggle="">
+							<div class="iconset top-home"></div>
+						</a>
+					</li>	
+					<!-- BEGIN QUEUE TOGGLER -->
+					<li class="dropdown" id="portrait-chat-toggler" style="display:none">
+						<a href="#sidr" class="chat-menu-toggle">
+							<div class="iconset top-chat-white"></div>
+						</a>
+					</li>
+					<!-- END QUEUE TOGGLER -->		        
+				</ul>
+				<!-- END LOGO NAV BUTTONS -->
+			</div>
+			<!-- END NAVIGATION HEADER -->
+			<!-- BEGIN CONTENT HEADER -->
+			<div class="header-quick-nav"> 
+				<!-- BEGIN HEADER LEFT SIDE SECTION -->
+				<div class="pull-left"> 
+					<!-- BEGIN SLIM NAVIGATION TOGGLE -->
+					<ul class="nav quick-section">
+						<li class="quicklinks">
+							<a href="#" class="" id="layout-condensed-toggle">
+								<div class="iconset top-menu-toggle-dark"></div>
+							</a>
+						</li>
+					</ul>
+					<!-- END SLIM NAVIGATION TOGGLE -->				
+					<!-- BEGIN HEADER QUICK LINKS -->
+
+					<!-- BEGIN HEADER QUICK LINKS -->				
+				</div>
+				<!-- END HEADER LEFT SIDE SECTION -->
+				<!-- BEGIN HEADER RIGHT SIDE SECTION -->
+				<div class="pull-right"> 
+					<div class="chat-toggler">	
+							<div class="iconset"></div>
+							<div class="iconset"></div>
+							<div class="iconset"></div>
+							
+							<div class="user-details"> 
+								<div class="username">
+									<%= session[:user] %>								
+								</div>						
+							</div> 
+							
+							<div class="iconset"></div>
+						
+						<!-- BEGIN PROFILE PICTURE -->
+						<div class="profile-pic"> 
+							<img src="assets/profiles/admin.png" alt="" data-src="assets/profiles/admin.png" width="35" height="35" /> 
+						</div>  
+						<!-- END PROFILE PICTURE -->     			
+					</div>
+
+					<!-- BEGIN HEADER NAV BUTTONS -->
+					<ul class="nav quick-section">
+						<!-- BEGIN SETTINGS -->
+						<li class="quicklinks"> 
+							<a data-toggle="dropdown" class="dropdown-toggle pull-right" href="#" id="user-options">						
+								<div class="iconset top-settings-dark"></div> 	
+							</a>
+							<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="user-options" id="user-option">
+								<li><a href="/change-password.html">Change Password</a></li>
+								<% if session[:role] == "ADM" %>
+								<li><a href="manage-users.html">Manage Users</a></li>
+								<% end %>
+								<li class="divider"></li>                
+								<li><a href="/logout.html"><i class="fa fa-power-off"></i>&nbsp;&nbsp;Logout</a></li>
+							</ul>
+						</li>
+						<!-- END SETTINGS -->
+						<% if !validate_admin %>
+						<li class="quicklinks"><span class="h-seperate"></span></li> 
+						<!-- BEGIN CHAT SIDEBAR TOGGLE -->
+						<li class="quicklinks"> 	
+							<a id="chat-menu-toggle" href="#sidr" class="chat-menu-toggle">
+								<div class="iconset top-chat-dark"><span class="badge badge-important hide" id="chat-message-count" style="display:none;">0</span></div>
+							</a> 
+						</li>
+						<% end %>
+
+					</ul>
+					<!-- END HEADER NAV BUTTONS -->
+				</div>
+				<!-- END HEADER RIGHT SIDE SECTION -->
+			</div> 
+			<!-- END CONTENT HEADER --> 
+		</div>
+		<!-- END TOP NAVIGATION BAR --> 
+	</div>
+	<!-- END HEADER -->
+
+	<!-- BEGIN CONTENT -->
+	<div class="page-container row-fluid">
+		<!-- BEGIN SIDEBAR -->
+		<!-- BEGIN MENU -->
+		<div class="page-sidebar" id="main-menu"> 
+			  <div class="page-sidebar-wrapper" id="main-menu-wrapper">
+			<!-- BEGIN MINI-PROFILE -->
+			<div class="user-info-wrapper">	
+				<div class="profile-wrapper">
+					<img src="assets/profiles/admin.png" alt="" data-src="assets/profiles/admin.png" width="69" height="69" />
+				</div>
+				<div class="user-info">
+					<div class="greeting">Welcome</div>
+					<div class="username"><%= session[:user] %></div>
+					<div class="status">Status<a href="#"><div class="status-icon green"></div>Online</a></div>
+				</div>
+			</div>
+			<!-- END MINI-PROFILE -->
+			<!-- BEGIN SIDEBAR MENU -->	
+			<p class="menu-title">Menu</p>
+			<ul id="menu-nav">	
+				<!-- BEGIN SELECTED LINK -->
+				<li class="start">
+					<a href="/activation.html?list=participant">
+						<i class="fa fa-users"></i>
+						<span class="title">Participants</span>
+						<!--
+						<span class="badge badge-important pull-right">5</span>
+						-->
+					</a>
+				</li>
+				<li class="">
+					<a href="/activation.html?list=speaker">
+						<i class="fa fa-user"></i>
+						<span class="title">Speakers</span>
+						<!--
+						<span class="badge badge-important pull-right">5</span>
+						-->
+					</a>
+				</li>
+				<!-- END SELECTED LINK -->
+				<!-- BEGIN BADGE LINK -->
+				<li class="">
+					<a href="/activation.html?list=staff">
+						<i class="fa fa-video-camera"></i>
+						<span class="title">Staff</span>
+						<!--
+						<span class="badge badge-disable pull-right">203</span>
+						-->
+					</a>
+				</li>
+				<!-- END BADGE LINK -->     
+				<!-- BEGIN ONE LEVEL MENU -->
+				<% if validate_admin %>
+				<!--
+				<li class="">
+					<a href="/statistics.html">
+						<i class="icon-custom-chart"></i>
+						<span class="title">Statistics</span>
+					</a>
+				</li>
+				-->
+				<li class="">
+					<a href="javascript:;">
+						<i class="fa fa-sitemap"></i>
+						<span class="title">Manage</span>
+						<span class="arrow" id="arrow1"></span>
+					</a>
+					<ul class="sub-menu">
+						<!--<li><a href="/manage-users.html">Users</a></li>-->
+						<li><a href="/manage-participant.html">Delegates</a></li>
+						<!--<li><a href="/manage-sessions.html">Sessions</a></li>-->
+						<li>
+							<a href="javascript:;">
+								<span class="title">Sessions</span> 
+								<span class="arrow" id="arrow2">
+							</a>
+							<ul class="sub-menu" style="display:none;" id="sub-session">
+								<% getallroom.each do|r| %>
+								<li class="<%= r.code.downcase %>"><a href="/manage-sessions.html?room=<%= r.code %>"><%= r.name %> Room</a></li>
+								<% end %>
+							</ul>
+						</li>
+						<li><a href="/reactivate-rfid.html">Reactivate RFID</a></li>
+					</ul>
+				</li>
+				<% else %>
+				<li class="">
+					<a href="/reactivate-rfid.html">
+						<i class="fa fa-credit-card"></i>
+						<span class="title">Reactivate RFID</span>
+					</a>
+				</li>
+				<% end %>
+				<!-- END ONE LEVEL MENU -->
+	
+			</ul>
+			<!-- END SIDEBAR MENU -->
+
+			<div class="clearfix"></div>
+
+		</div>
+		</div>
+		<!-- BEGIN SCROLL UP HOVER -->
+		<a href="#" class="scrollup">Scroll</a>
+		<!-- END SCROLL UP HOVER -->
+		<!-- END MENU -->
+
+		<!-- END SIDEBAR --> 
+		<!-- BEGIN PAGE CONTAINER-->
+		<div class="page-content"> 
+			<div class="content">  
+				<!-- BEGIN PlACE PAGE CONTENT HERE -->
+					<%= yield %>				
+				<!-- END PLACE PAGE CONTENT HERE -->
+			</div>
+		</div>
+		<!-- END PAGE CONTAINER -->
+	</div>
+	<!-- END CONTENT --> 
+	<% if !validate_admin %>
+	<!-- BEGIN CHAT --> 
+	<div id="sidr" class="chat-window-wrapper" style="z-index:999;">
+		<div id="main-chat-wrapper">
+			<div class="chat-window-wrapper fadeIn" id="chat-users">
+	
+				<!-- BEGIN GROUP WIDGET -->
+				<div class="side-widget">
+					<div class="side-widget-content">
+						<div id="groups-list">
+							<ul class="groups">
+								<li>
+									<a href="#" style="font-size:20px;padding:5px 20px;">
+									<i class="fa fa-users fa-2x"></i>
+									Activation Queues
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- END GROUP WIDGET -->
+				<!-- BEGIN QUEUE WIDGET -->
+				<div class="side-widget fadeIn">
+					<div class="side-widget-title" style="height:65px;"><%= session[:home] %>
+						<!-- BEGIN QUEUE SEARCH BAR -->
+						<div style="padding:10px;">
+							<input type="text" placeholder="SEARCH" id="searchQ">
+						</div>
+						<!-- END QUEUE SEARCH BAR -->	
+					</div>
+					<div class="side-widget-content" id="queueList"></div>
+				</div>
+				<!-- END QUEUE WIDGET -->
+			</div>		
+		</div>
+	</div>
+	<!-- END CHAT --> 
+	<% end %>
+
+	<!-- Modal -->
+	<div class="modal fade" data-backdrop="static" id="activateRFID" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+		
+		<div class="col-md-3" id="loadAjax">
+			<h1 style="color:white!important">Activating RFID..</h1>
+			<div class="progress progress-striped active progress-large">
+			  	<div data-percentage="100%" style="width: 100%;" class="progress-bar progress-bar-success"></div>
+			</div>
+		</div>
+
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+				    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				    <br>
+				    <i class="fa fa-credit-card fa-7x"></i>
+				    <h2 id="myModalLabel" class="semi-bold" >
+				    	<font style="vertical-align: 10px;font-size: 50px;">Activation RFID</font>
+				    </h2>
+				    <p class="no-margin">Please touch RFID card on the reader!</p>
+				    <br>
+				</div>
+				<div class="modal-body">
+				    <div class="row form-row">
+				        <div class="col-md-12">
+					        <input type="hidden" id="pRegid" value="" >
+				        	<input type="text" id="pName" name="" class="form-control" placeholder="" style="color:#f4f5f7;text-align:center" onblur="this.focus()" >
+				        </div>
+				    </div>
+				</div>
+				<div class="modal-footer">
+				    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		  <!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<% if validate_admin %>
+	<!-- Modal -->
+	<div class="modal fade" data-backdrop="static" id="newSession" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+		
+		<div class="col-md-3" id="loadAjaxSession">
+			<h1 style="color:white!important" id="aLoading"></h1>
+			<div class="progress progress-striped active progress-large">
+			  	<div data-percentage="100%" style="width: 100%;" class="progress-bar progress-bar-success"></div>
+			</div>
+		</div>
+
+		<div class="modal-dialog nModal">
+			<div class="modal-content">
+				<div class="modal-header">
+				    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				    <br>
+				    <h3 id="myModalLabel" class="semi-bold" >
+				    	<font id="mTitle"></font>
+				    </h3>
+				    <p class="no-margin" id="mDesc"></p>
+				    <br>
+				</div>
+				<div class="modal-body" id="mBody">
+				</div>
+				<div class="modal-footer" id="mButton">
+				</div>
+			</div>
+		  <!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<% end %>
+</body>
+<script type="text/javascript">
+$(document).ready(function() {	
+	// flash message //
+    if($("#flash_alert").html()!="" && $("#flash_alert").html()!=null){
+        showErrorMessage($("#flash_alert").html());
+    }
+    else if($("#flash_notice").html()!="" && $("#flash_notice").html()!=null){
+        showSuccess($("#flash_notice").html());
+    }
+
+});
+</script>
+</html>

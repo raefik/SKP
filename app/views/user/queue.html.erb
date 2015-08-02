@@ -1,0 +1,151 @@
+<div class="p-t-20 p-l-40 p-r-40 p-b-20 xs-p-t-10 xs-p-l-10 xs-p-r-10 xs-p-b-10" > 
+  	<h2 class="normal" style="font-size:29px;">GES 2014 Participant Validation</h2>
+</div>
+
+<div class="tiles grey p-t-20 p-b-20 text-black">
+	<form id="frm_login" class="animated fadeIn" method="post" action="/validation.html">    
+        <div class="row form-row m-l-20 m-r-20 xs-m-l-10 xs-m-r-10">
+			<div class="input-group col-md-12 col-sm-12 ">          
+	            <span class="input-group-addon">		
+					<i class="fa fa-search"></i> 		
+				</span>
+	            <input name="name" id="name" type="text"  class="form-control" placeholder="Search Your Name">
+	        </div>
+
+	    </div>
+        <div class="row p-t-10 m-l-20 m-r-20 xs-m-l-10 xs-m-r-10">
+			<div class="control-group  col-md-12" style="text-align:right">
+				 <input type="submit" class="btn btn-success btn-cons" id="login_toggle" value="Search" />	
+			</div>
+		</div>
+	</form>
+
+</div>
+<%
+	if request.post? && !params[:name].empty?
+%>
+<table class="table table-hover table-condensed footable toggle-arrow-tiny">
+  	<thead>
+
+        <tr>
+	        <th class="text-center" style="width:10%" data-hide="phone" >TAG CODE</th>
+	        <th class="text-center" style="width:30%" >FULLNAME</th>
+	        <th class="text-center" style="width:10%" data-hide="phone">COUNTRY</th>
+	        <th class="text-center" style="width:10%" >TYPE</th>
+	        <th class="text-center" style="width:10%" >VALIDATION</th>
+        </tr>
+  	</thead>
+    <tbody>
+<%
+	num = 1
+	if !@users.empty?
+		@users.each do|u|
+%>    	
+        <tr class="">
+	        <td class="unseen text-center"><%= u.tag_code %></td>
+	        <td><%= u.fullname.upcase %></td>
+	        <td><%= u.nationality.name %></td>
+	        <td><%= u.participanttype.name %></td>
+	        <td class="text-center">
+	        	<% if u.gesparticipant.nil? || (u.gesparticipant.registrationstatus.code != "ACT" && u.gesparticipant.registrationstatus.code != "QU") %>
+	        	<button regid="<%= u.id.to_s %>" id="<%= u.id.to_s %>" status="true" email="<%= u.email %>" type="button" class="btn btn-white activation"><i class="fa fa-user"></i></button>
+	        	<% else %>
+	        		<i class="fa fa-check"></i>
+	        	<% end %>
+	        </td>
+        </tr>
+
+<% 		num = num+1
+		end
+	else 
+%> 
+		<tr>
+	        <td class="unseen text-center" colspan="5">No result found!</td>
+        </tr>       
+<% 	end %> 
+
+    </tbody>
+</table>
+<% end %>
+<script type="text/javascript">
+window.onload = function(){
+	var socket = io.connect('<%= nodeserver %>');
+
+	<% if !params[:name].nil? %>
+	$('#name').val("<%= params[:name].upcase %>");
+	<% end %>
+    $('#name').focus();
+
+    $(".activation").live("click",function(){
+    	$("#pName").html("")
+    	$("#pStatus").html("")
+    	$("#pEmail").html("")
+    	$("#pIc").html("")
+
+    	var status = $(this).attr("status")	    	
+    	var navigate = ""
+    	if(status == "true"){
+    		navigate = "Click \"Validate\" and go to the \"RFID Activation\" counter"
+    		$("#pr").show()
+    		$("#pStatus").css("color","limegreen")
+    	}else{
+    		navigate = "Please complete the payment at the counter!"
+    		$("#pr").hide()
+    		$("#pStatus").css("color","tomato")
+
+    	}
+
+    	var name = $(this).parent().parent().find("td:nth-child(3)").html()
+    	var ic = $(this).parent().parent().find("td:nth-child(2)").html()
+    	var email = $(this).attr("email")
+
+
+    	$("#pStatus").html(navigate)
+    	$("#pStatus").attr("regid",$(this).attr("regid"))
+    	$("#pName").html(name.toUpperCase())
+    	$("#pIc").html(ic)
+    	$("#pEmail").html(email)
+    	
+
+    	$('#activateRFID').modal("show")
+    })
+
+
+
+    $("#pr").live("click",function(){
+    	$(".modal-dialog").hide()
+    	$("#loadAjax").show()
+
+    	$.ajax({
+		  	url: "/push-queue.html",
+		  	type: "post",
+            data: {
+                regid: $("#pStatus").attr("regid"),
+            },
+		}).success(function(data) {
+		  	$("#name").val("")
+	    	$(".table").hide()
+	    	showSuccess("Success!\nPlease go to the \"RFID Activation\" counter");
+	    	$('#activateRFID').modal("hide")
+	    	socket.emit('push-queue', { message: data.data.type, regid: data.data.regid });
+		}).error(function(){
+			$(".modal-dialog").show()
+    		$("#loadAjax").hide()
+			showErrorMessage("Something went wrong!\nPlease try again later");
+		});
+    })
+
+<%
+	if request.post? && !params[:name].empty?
+%>
+    //init footable for responsive
+  	$('.table').footable({
+		breakpoints: {
+			phone : 480,
+		    tablet: 840,
+		  }
+	});
+<% end %>
+}
+
+</script>

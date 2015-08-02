@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  track_id: 1
+  rfid: MyString
+  first_in: 2014-03-19 12:44:18
+  last_out: 2014-03-19 12:44:18
+
+two:
+  track_id: 1
+  rfid: MyString
+  first_in: 2014-03-19 12:44:18
+  last_out: 2014-03-19 12:44:18

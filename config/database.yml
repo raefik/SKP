@@ -1,0 +1,44 @@
+#mysql production server
+production:
+  adapter: mysql2
+  encoding: utf8
+  host: localhost
+  database: ges2014_production
+  pool: 5
+  username: root
+  password: 1234
+
+
+#mysql development server
+development:
+  adapter: mysql2
+  encoding: utf8
+  host:	localhost
+  database: ges2014_production
+  pool: 5
+  username: root
+  password: 1234
+  #password:
+
+
+# mysql test server
+test:
+  adapter: mysql2
+  host: localhost
+  database: ges2014_test
+  pool: 5
+  username: root
+  password: 1234
+
+## mysql testing
+#development:
+#  adapter: mysql2
+#  encoding: utf8
+#  host: mysql51.ukdns.biz
+#  database: seleratr_ges
+#  pool: 5
+#  username: seleratr_ges
+#  password: ges2014
+
+# DATABASE_URL = mysql2://secumcom_ges2014:ges2014@103.8.25.8:3306/secumcom_ges2014
+# DATABASE_URL = mysql2://seleratr_ges:ges2014@mysql51.ukdns.biz:3306/seleratr_ges

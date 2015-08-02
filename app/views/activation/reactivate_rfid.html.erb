@@ -1,0 +1,293 @@
+
+<style type="text/css">
+    .opacity{
+	     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	      filter: alpha(opacity=0);
+	     -moz-opacity: 0;
+	     -khtml-opacity: 0;
+	     opacity: 0;
+    }
+
+    input[type="file"]{
+	    position: absolute;
+	    width: 82px;
+	    margin-left: -8px;
+		margin-top: -27px;
+    }
+</style>
+
+<div class="page-title">
+	<h3>Reactivate RFID</h3>
+</div>
+<input type="hidden" id="list" value="All"/>
+
+<div class="row-fluid">
+    <div class="span12">
+      <div class="grid simple ">
+        <div class="grid-title">
+          <h4>
+          		All <span class="semi-bold">Delegate</span> 
+          </h4>
+          <div class="tools"> <a href="javascript:;" class="reload"></a></div>
+        </div>
+        <div class="grid-body ">
+          <table class="table table-hover table-condensed footable toggle-arrow-tiny" id="table1">
+            <thead>
+              <tr>
+                <th style="width:10%" data-hide="phone">Tag Code</th>
+                <th style="width:15%">Fullname</th>
+                <th style="width:15%">Designation</th>
+                <th style="width:20%">Organization</th>
+                <th style="width:20%" data-hide="phone,tablet">Country</th>
+                <!--<th style="width:10%" data-hide="phone,tablet">Email</th>-->
+                <th style="width:10%" data-hide="phone">Type</th>
+                <th style="width:10%">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+<script type="text/javascript">
+window.onload = function(){
+
+	$("#menu-nav > li:nth(3), #menu-nav > li:nth(3) > ul > li:nth(2)").addClass("active");
+	$("#arrow1").addClass("open");
+
+   	//init footable for responsive
+  	$('#table1').footable({
+		breakpoints: {
+			phone : 480,
+		    tablet: 840,
+		    desktop: 1200
+		  }
+	});
+
+	/** start datatable init **/
+	var tableElement = $('#table1');
+
+    tableElement.dataTable( {
+		"sDom": "<'row'<'col-md-4 toolbar'l T ><'col-md-8' f <'filter dataTables_filter'>>r >t<'row'<'col-md-12'p i>>",
+		"oTableTools": {
+			"sSwfPath": "/assets/plugins/dataTableTools/media/swf/copy_csv_xls_pdf.swf",
+			"aButtons": [
+				{
+					"sExtends":    "collection",
+					"sButtonText": "<i class='fa fa-download'></i>",
+					"aButtons": [ 
+						{
+							"sExtends" : "xls",
+							"sTitle"   : "List of Delegate ("+$("#list").val()+")",
+							"mColumns" : [ 0, 1, 2, 5 ],
+							"sFileName": "*.xls",
+							"fnClick": function( nButton, oConfig, flash ){
+	                            flash.setFileName("List_of_Delegate_("+$("#list").val()+").xls" )
+	                            this.fnSetText( flash,
+							        "List of Participant ("+$("#list").val()+")\n\n"+
+							        "Showing "+tableElement.fnSettings().aoData.length+" of "+tableElement.fnSettings().fnRecordsTotal()+" participant(s)\n\n"+
+							        this.fnGetTableData(oConfig)
+							    );     
+	                        }
+						},
+						{
+							"sExtends" : "pdf",
+							//"sTitle"   : "List of Participant ("+$("#list").val()+")",
+							"mColumns" : [ 0, 1, 2, 5 ],
+							"fnClick":  function( nButton, oConfig, flash ) {
+							    flash.setFileName("List_of_Delegate_("+$("#list").val()+").pdf" );
+							    console.log(this)
+							    this.fnSetText( flash,
+							        "title:"+ "List of Participant ("+$("#list").val()+")" +"\n\n"+
+							        "message:"+ "Showing "+tableElement.fnSettings().aoData.length+" of "+tableElement.fnSettings().fnRecordsTotal()+" participant(s)\n\n"+ 
+							        "colWidth:"+ this.fnCalcColRatios(oConfig) +"\n"+
+							        "orientation:"+ oConfig.sPdfOrientation +"\n"+
+							        "size:"+ oConfig.sPdfSize +"\n"+
+							        "--/TableToolsOpts--\n" +
+							        this.fnGetTableData(oConfig)
+							    );
+							}
+						}, 
+						"copy"
+					]
+				}
+			],
+		},
+		//"aoColumnDefs": [{ 
+		//	"bSortable": false, "aTargets": [ 4,5 ] 
+		//}],
+		"bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "/get-list-participant.html?type=reactivate",
+        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
+	      oSettings.jqXHR = $.ajax( {
+	        "dataType" : 'json',
+	        "url" : sSource,
+	        "data" : aoData,
+	        "success" : fnCallback,
+	        "type": "POST",
+	        "headers": {
+		            	'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+		        	},
+	        //"beforeSend" :  function(xhr){
+	        					//if(xhr && xhr.readystate != 4){
+						        //    xhr.abort();
+						        //}
+	        //				},
+	      } );
+	    },
+		"aLengthMenu": [[10, 20, 30, 40, -1], [10, 20, 30, 40,"All"]],
+        "iDisplayLength": 10,
+		"sPaginationType": "bootstrap",
+		"aoColumnDefs": [
+          { 'bSortable': false, 'aTargets': [ 6 ] },
+		],
+		"aaSorting": [[ 0, "asc" ]],
+		"bFilter": true,
+		"oLanguage": {
+			"sLengthMenu": "_MENU_ ",
+			"sInfo": "Showing <b>_START_ to _END_</b> of _TOTAL_ participants"
+		},
+		"oLanguage": {
+			"sSearch": "SEARCH: "
+		},
+		"deferRender": true,
+		"deferLoading": 57,
+		bAutoWidth     : false,
+        fnPreDrawCallback: function () {
+        	$('.dataTables_filter input').attr("placeholder", "TAG CODE / NAME");
+        	$('.dataTables_filter input').attr("style", "text-align:center;color:#777;margin-right:10px;");
+        	$('.dataTables_filter').attr("style", "text-align:right;");
+        },
+        fnRowCallback  : function (nRow) {
+
+        },
+        fnDrawCallback : function (oSettings) {
+        	$(".act").parent().parent().attr("style","background-color:rgba(175, 255, 168, 0.23) !important;")
+        }
+	});
+
+	$("div.bt").attr("style","margin-top: -37px;text-align: right;")
+
+
+	option  = '<label class="opt">FILTER:<select style="margin-left:12px;margin-right:10px;width:173px;" id="typeFilter" s="All" >'
+	option += '<option value="all">All</option>'
+	option += '<option value="DLG">Participant</option>'
+	option += '<option value="MDA">Staff</option>'
+	option += '<option value="SPK">Speaker</option>'
+	option += '</select></label>'
+	$("div.filter").html(option)
+	$("div.filter, .opt").css("text-align","right")
+
+	$("#typeFilter").live('change',function(){
+        var s = "All"
+        if($(this).val() == "DLG" ){ s = "Delegate"}
+        else if($(this).val() == "SPK" ){ s = "Speaker"}
+        else if($(this).val() == "MDA" ){ s = "Staff"}
+
+        $("#list").val(s)
+    	
+        tableElement.fnFilter($(this).val(), 3)
+
+    });
+
+	//$("#typeFilter").css("width", $(".input-medium").css("width"))
+
+	tableElement.fnSetFilteringDelay();
+	
+	$('#table1_wrapper .dataTables_filter input').addClass("input-medium "); // modify table search input
+    $('#table1_wrapper .dataTables_length select').addClass("select2-wrapper span12"); // modify table per page dropdown
+	
+	$('#table1 input').click( function() {
+        $(this).parent().parent().parent().toggleClass('row_selected');
+    });
+	
+	
+	$('#quick-access .btn-cancel').click( function() {
+		$("#quick-access").css("bottom","-115px");
+    });
+	$('#quick-access .btn-add').click( function() {
+		fnClickAddRow();
+		$("#quick-access").css("bottom","-115px");
+    });
+    /** end datatable init**/
+
+    /** start reactivate **/
+    $(".reactivate").live("click",function(){
+    	//alert($(this).attr("uid"))
+
+	   	$("#pName").val("")
+    	$("#pRegid").val("")
+    	
+    	if($(this).attr("from")=="table"){
+    		var name = $(this).parent().parent().find("td:nth-child(2)").html()
+    	}else{
+    		var name = $(this).find(".participant-name b").html()
+    	}
+    	$("#myModalLabel > font").html("Reactivate RFID")
+    	$("#pRegid").val($(this).attr("uid"))
+    	$("#pName").attr('placeholder',name.toUpperCase())
+    	$("#pName").attr('name',name)
+    	$('#activateRFID').modal("show")
+		$("#pName").focus()
+
+    })
+
+	    /** start touched rfid**/
+		$("#pName").keypress(function (e) {
+		    if (e.which == '13'){
+		    	var name = $("#pName").attr('name')
+		    	var regid = $("#pRegid").val()
+		    	var rfid = $("#pName").val()
+		    	reactivaterfid(rfid,regid,name);
+		    }
+		})
+	 	/** end touched rfid**/
+
+    /** end reactivate **/
+
+}
+
+function reactivaterfid(rfid,regid,name){
+	$("#loadAjax > h1").html("Reactivating RFID..")
+
+	$(".modal-dialog").hide()
+	$("#loadAjax").show()
+
+	$.ajax({
+	  	url: "/reactivate.html",
+	  	type: "post",
+        data: {
+            regid: regid,
+            rfid: rfid,
+        },
+        headers: {
+            'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+        },
+	}).success(function(data) {
+		$(".modal-dialog").show()
+	    $("#loadAjax").hide()
+
+	    if(data.activate){	
+		    $('#activateRFID').modal("hide")
+			showSuccess(name+" successfully reactivated");
+		}
+		else{
+			$("#pName").focus();
+			$("#pName").val("")
+			showErrorMessage("Something went wrong!\n"+data.message);
+		}
+	}).error(function(){
+		$(".modal-dialog").show()
+	    $("#loadAjax").hide()
+	    $("#pName").focus();
+		$("#pName").val("")
+		showErrorMessage("Cannot activate RFID!\nPlease try again later");
+	});
+}
+
+
+</script>

@@ -1,0 +1,114 @@
+<style type="text/css">
+<% @room.each do |r| %>
+.<%= r.name.downcase %>{
+	margin:17px;
+	background: url(/assets/flags/jata/<%= r.img %>);
+	background-repeat:no-repeat;
+	background-size:contain;
+	/**background-size:cover;**/
+	background-position:center;
+	overflow: hidden;
+
+}
+
+<% end %>
+.tiles-body{
+	background-color: rgba(0,0,0,0.5);
+    -ms-filter: "progid: DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    -webkit-transform: rotate(0deg) scale(1);
+    -moz-transform: rotate(0deg) scale(1);
+    -o-transform: rotate(0deg) scale(1);
+    -ms-transform: rotate(0deg) scale(1);
+    transform: rotate(0deg) scale(1);
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    -ms-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+    filter: alpha(opacity=0);
+    opacity: 0;
+}
+.tiles-body:hover{
+	-ms-filter: "progid: DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    -webkit-transform: rotate(0deg) scale(1);
+    -moz-transform: rotate(0deg) scale(1);
+    -o-transform: rotate(0deg) scale(1);
+    -ms-transform: rotate(0deg) scale(1);
+    transform: rotate(0deg) scale(1);
+    filter: alpha(opacity=100);
+    opacity: 1;
+}
+
+</style>
+
+<!-- BEGIN PAGE TITLE -->
+<div class="page-title" style="text-align:center;">	
+	<h1 class="normal">Select Room</h1>		
+</div>
+<!-- END PAGE TITLE -->
+<div class="row-fluid">
+    <div class="span12">
+      	<div class="grid simple ">
+        	<div class="grid-body ">
+          
+				<div class="row">
+					<!-- BEGIN DASHBOARD TILES -->
+					<%
+					i = 0;
+					@room.each do |r| 
+					%>
+					<form action="attendance.html" method="post">
+						<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token%>" />
+						<input type="hidden" name="room" value="<%= r.code %>" />
+						<div class="col-md-3 m-b-20 outer">
+						    <div class="tiles adjust-text room <%= r.name.downcase %>">
+							    <div class="tiles-body">
+							    	<i class="fa fa-map-marker fa-2x marker" style="color: rgb(255, 233, 68);"></i>
+							        <p class="p-t-10 venue" style="color:rgb(224, 224, 224)">Shangri-La Hotel</p>
+							        <h2 class="text-white roomname" style="font-weight:bold;font-size:2em;" ><%= r.name %> Room</h2>
+							        <p class="p-t-20 " style="color: rgb(105, 255, 76);">
+							        	Room Capacity : <span class="bold"><%= r.capacity.to_s %></span> persons
+							        </p>
+							    </div>
+						    </div>
+						</div>
+					</form>
+					<% end %>
+					<!-- END DASHBOARD TILES -->
+				</div>
+
+        	</div>
+      	</div>
+    </div>
+</div>
+
+<script type="text/javascript">
+window.onload = function(){
+
+	//clicked on tile
+	$(".room").click(function(el){
+		var el  = 	$(this).block({
+				        message: '<div class="loading-animator"></div>',
+				        css: {
+				            border: 'none',
+				            padding: '2px',
+				            backgroundColor: 'none'
+				        },
+				        overlayCSS: {
+				            backgroundColor: '#fff',
+				            opacity: 0.3,
+				            cursor: 'wait'
+				        }
+				    });
+		  	window.setTimeout(function () {
+                $(el).unblock();
+
+            }, 1000);
+            $(this).parent().parent().submit();
+	})
+}
+
+</script>
+
+	
+
